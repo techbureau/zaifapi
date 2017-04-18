@@ -152,10 +152,10 @@ class ZaifPublicApi(AbsZaifApi):
     def everything(self, func_name, currency_pair, params):
         return self._execute_api(func_name, currency_pair, params)
 
-    def streaming(self, currency_pair, count=_MAX_COUNT, wait_time_sec=1):
+    def streaming(self, currency_pair, count=_MAX_COUNT, wait_time_sec=0):
         count = min(count, _MAX_COUNT)
         self._params_pre_processing(currency_pair)
-        ws = create_connection('ws://{}:8888/stream?currency_pair={}'.format(self._api_domain, currency_pair))
+        ws = create_connection('wss://ws.zaif.jp:8888/stream?currency_pair={}'.format(currency_pair))
         for i in range(count):
             result = ws.recv()
             yield json.loads(result)
