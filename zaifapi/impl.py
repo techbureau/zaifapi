@@ -114,14 +114,18 @@ class AbsZaifApi(AbsZaifBaseApi):
         raise Exception(json.dumps(v.errors))
 
 
-class ZaifPublicApi(AbsZaifApi):
-    _API_URL = '{}://{}/api/1/{}/{}'
+class ZaifPublicApiBase(AbsZaifApi):
+    __metaclass__ = ABCMeta
 
     def _params_pre_processing(self, currency_pair):
         params = {
             'currency_pair': currency_pair
         }
-        super(ZaifPublicApi, self).params_pre_processing(['currency_pair'], params)
+        super(ZaifPublicApiBase, self).params_pre_processing(['currency_pair'], params)
+
+
+class ZaifPublicApi(ZaifPublicApiBase):
+    _API_URL = '{}://{}/api/1/{}/{}'
 
     def _execute_api(self, func_name, currency_pair, params=None):
         self._params_pre_processing(currency_pair)
@@ -152,14 +156,20 @@ class ZaifPublicApi(AbsZaifApi):
     def everything(self, func_name, currency_pair, params):
         return self._execute_api(func_name, currency_pair, params)
 
-    def streaming(self, currency_pair, count=_MAX_COUNT, wait_time_sec=0):
-        count = min(count, _MAX_COUNT)
+
+class ZaifPublicStreamApi(ZaifPublicApiBase):
+    def __init__(self):
+        self._continue = True
+
+    def stop(self):
+        self._continue = False
+
+    def execute(self, currency_pair):
         self._params_pre_processing(currency_pair)
         ws = create_connection('wss://ws.zaif.jp:8888/stream?currency_pair={}'.format(currency_pair))
-        for i in range(count):
+        while self._continue:
             result = ws.recv()
             yield json.loads(result)
-            time.sleep(wait_time_sec)
         ws.close()
 
 
