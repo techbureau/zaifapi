@@ -11,6 +11,8 @@ from abc import ABCMeta, abstractmethod
 from websocket import create_connection
 from future.moves.urllib.parse import urlencode
 from zaifapi.api_common import get_response, AbsZaifBaseApi
+from zaifapi.api_error import ZaifApiError, ZaifApiNonceError
+
 
 SCHEMA = {
     'from_num': {
@@ -206,7 +208,9 @@ class _AbsZaifPrivateApi(AbsZaifApi):
         header = self.get_header(params)
         res = get_response(self._API_URL.format(self.get_protocol(), self._api_domain), params, header)
         if res['success'] == 0:
-            raise Exception(res['error'])
+            if res['error'].startswith('nonce'):
+                raise ZaifApiNonceError(res['error'])
+            raise ZaifApiError(res['error'])
         return res['return']
 
     def get_info(self):
