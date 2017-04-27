@@ -6,6 +6,7 @@ import hashlib
 import inspect
 import cerberus
 import requests
+from decimal import Decimal
 from datetime import datetime
 from abc import ABCMeta, abstractmethod
 from websocket import create_connection
@@ -175,27 +176,23 @@ class ZaifPublicStreamApi(ZaifPublicApiBase):
         ws.close()
 
 
-class _AbsZaifPrivateApi(AbsZaifApi):
+class _AbsZaifTradeApi(AbsZaifApi):
     _API_URL = '{}://{}/tapi'
-
-    def __init__(self, nonce=None):
-        if nonce is None:
-            now = datetime.now()
-            nonce = int(time.mktime(now.timetuple()))
-        self._nonce = nonce
 
     @abstractmethod
     def get_header(self, params):
         raise NotImplementedError()
 
-    @property
-    def nonce(self):
-        return self._nonce
+    @staticmethod
+    def _get_nonce():
+        now = datetime.now()
+        nonce = str(int(time.mktime(now.timetuple())))
+        microseconds = str(now.microsecond)
+        return Decimal(nonce + '.' + microseconds)
 
     def _get_parameter(self, func_name, params):
         params['method'] = func_name
-        self._nonce += 1
-        params['nonce'] = self._nonce
+        params['nonce'] = self._get_nonce()
         return urlencode(params)
 
     def _execute_api(self, func_name, schema_keys=None, params=None):
@@ -256,11 +253,11 @@ class _AbsZaifPrivateApi(AbsZaifApi):
         return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
 
 
-class ZaifPrivateApi(_AbsZaifPrivateApi):
-    def __init__(self, key, secret, nonce=None):
+class ZaifTradeApi(_AbsZaifTradeApi):
+    def __init__(self, key, secret):
         self._key = key
         self._secret = secret
-        super(ZaifPrivateApi, self).__init__(nonce)
+        super(ZaifTradeApi, self).__init__()
 
     def get_header(self, params):
         signature = hmac.new(bytearray(self._secret.encode('utf-8')), digestmod=hashlib.sha512)
@@ -271,10 +268,10 @@ class ZaifPrivateApi(_AbsZaifPrivateApi):
         }
 
 
-class ZaifPrivateTokenApi(_AbsZaifPrivateApi):
-    def __init__(self, token, nonce=None):
+class ZaifTokenTradeApi(_AbsZaifTradeApi):
+    def __init__(self, token):
         self._token = token
-        super(ZaifPrivateTokenApi, self).__init__(nonce)
+        super(ZaifTokenTradeApi, self).__init__()
 
     def get_header(self, params):
         return {

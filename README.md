@@ -16,17 +16,14 @@ zaifが公開しているAPIを簡単に呼べる用にしました。
     zaif = ZaifPublicApi()
     print(zaif.last_price('btc_jpy'))
     
-    zaif = ZaifPrivateApi(key, secret)
+    zaif = ZaifTradeApi(key, secret)
     print(zaif.get_info())
-    # 次回利用時のためにnonceを保存しておく
-    nonce = zaif.nonce
-    zaif = ZaifPrivateApi(key, secret, nonce)
     print(zaif.get_info2())
     
-    zaif = ZaifPrivateTokenApi(token)
+    zaif = ZaifTokenTradeApi(token)
     print(zaif.get_info())
     
-    token = ZaifTokenApi(client_id, client_secret)
+    token = ZaifTokenTradeApi(client_id, client_secret)
     reponse = token.get_token(code):
     print(reponse)
     >>>{'token_type': 'bearer',
@@ -60,7 +57,7 @@ currency_pairはbtc_jpy、xem_jpy、mona_jpy、mona_btcが指定可能です
 
 詳細は下記参考を御覧ください。
 
-[参考](https://corp.zaif.jp/api-docs/)
+[参考](https://techbureau-api-document.readthedocs.io/ja/latest/public/index.html)
 ***
 
 ### ZaifPrivateApi
@@ -75,7 +72,7 @@ currency_pairはbtc_jpy、xem_jpy、mona_jpy、mona_btcが指定可能です
 
 戻り値はすべてjsonとなっています。
 
-[参考](https://corp.zaif.jp/api-docs/trade-api/)
+[参考](https://techbureau-api-document.readthedocs.io/ja/latest/trade/index.html)
 ***
 
 ### ZaifPrivateTokenApi
@@ -110,7 +107,7 @@ refresh_token(refresh_token):
 | refresh_token | ◯ | token発行時(get_token実行時)、返却されたrefresh_token値を指定します | - |
 
 各関数の戻り値は下記を参照してください。
-[OAuth認証機能利用手順](https://corp.zaif.jp/api-docs/oauth/)
+[OAuth認証機能利用手順](https://techbureau-api-document.readthedocs.io/ja/latest/oauth/index.html)
 
 ***
 
