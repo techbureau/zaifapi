@@ -80,8 +80,12 @@ SCHEMA = {
     },
     'is_token_both': {
         'type': 'boolean'
+    },
+    'comment': {
+        'type': 'string'
     }
 }
+
 _MAX_COUNT = 1000
 _MIN_WAIT_TIME_SEC = 1
 
@@ -249,7 +253,7 @@ class _AbsZaifTradeApi(AbsZaifApi):
         return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
 
     def trade(self, **kwargs):
-        schema_keys = ['currency_pair', 'action', 'price', 'amount', 'limit']
+        schema_keys = ['currency_pair', 'action', 'price', 'amount', 'limit', 'comment']
         return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
 
 
