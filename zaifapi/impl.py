@@ -54,7 +54,7 @@ SCHEMA = {
     },
     'amount': {
         'required': True,
-        'type': 'number'
+        'type': ['number', 'decimal']
     },
     'opt_fee': {
         'type': 'number'
@@ -70,10 +70,10 @@ SCHEMA = {
     },
     'price': {
         'required': True,
-        'type': 'number'
+        'type': ['number', 'decimal']
     },
     'limit': {
-        'type': 'number'
+        'type': ['number', 'decimal']
     },
     'is_token': {
         'type': 'boolean'
@@ -88,6 +88,13 @@ SCHEMA = {
 
 _MAX_COUNT = 1000
 _MIN_WAIT_TIME_SEC = 1
+
+
+class _ZaifApiValidator(cerberus.Validator):
+    @staticmethod
+    def _validate_type_decimal(value):
+        if isinstance(value, Decimal):
+            return True
 
 
 class AbsZaifApi(AbsZaifBaseApi):
@@ -115,7 +122,7 @@ class AbsZaifApi(AbsZaifBaseApi):
 
     @classmethod
     def _validate(cls, schema, param):
-        v = cerberus.Validator(schema)
+        v = _ZaifApiValidator(schema)
         if v.validate(param):
             return
         raise Exception(json.dumps(v.errors))
