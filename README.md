@@ -60,7 +60,7 @@ currency_pairはbtc_jpy、xem_jpy、mona_jpy、mona_btcが指定可能です
 [参考](https://techbureau-api-document.readthedocs.io/ja/latest/public/index.html)
 ***
 
-### ZaifPrivateApi
+### ZaifTradeApi
 #### Zaifが公開している認証情報が必要なAPIを実行するクラスです
 ***
 インスタンス生成時に、zaifで発行出来るkeyとsecretの文字列を指定してください。
