@@ -167,9 +167,6 @@ class ZaifPublicApi(ZaifPublicApiBase):
     def currencies(self, currency):
         return self._execute_api(inspect.currentframe().f_code.co_name, currency)
 
-    def everything(self, func_name, currency_pair, params):
-        return self._execute_api(func_name, currency_pair, params)
-
 
 class ZaifPublicStreamApi(ZaifPublicApiBase):
     def __init__(self):
