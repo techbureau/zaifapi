@@ -253,7 +253,7 @@ class _AbsZaifTradeApi(AbsZaifApi):
         return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
 
     def cancel_order(self, **kwargs):
-        schema_keys = ['order_id', 'is_token']
+        schema_keys = ['order_id', 'is_token', 'currency_pair']
         return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
 
     def trade(self, **kwargs):
