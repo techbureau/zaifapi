@@ -195,7 +195,7 @@ class _AbsZaifTradeApi(AbsZaifApi):
     def _get_nonce():
         now = datetime.now()
         nonce = str(int(time.mktime(now.timetuple())))
-        microseconds = str(now.microsecond)
+        microseconds = '{0:06d}'.format(now.microsecond)
         return Decimal(nonce + '.' + microseconds)
 
     def _get_parameter(self, func_name, params):
