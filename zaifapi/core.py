@@ -7,7 +7,7 @@ from datetime import datetime
 from abc import ABCMeta, abstractmethod
 from future.moves.urllib.parse import urlencode
 from zaifapi.api_common import get_response
-from zaifapi.api_error import ZaifApiError, ZaifApiNonceError
+from zaifapi.api_error import ZaifApiError, ZaifApiNonceError, ZaifApiValidationError
 from .validator import ZaifApiValidator, SCHEMA
 
 
@@ -42,7 +42,7 @@ class ZaifExchangeApiCore(metaclass=ABCMeta):
         v = ZaifApiValidator(schema)
         if v.validate(params):
             return
-        raise Exception(json.dumps(v.errors))
+        raise ZaifApiValidationError(json.dumps(v.errors))
 
 
 class ZaifPublicApiBase(ZaifExchangeApiCore, metaclass=ABCMeta):
