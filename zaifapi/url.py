@@ -1,12 +1,25 @@
 class BaseUrl:
-    def __init__(self, api_name, scheme='https', host='api.zaif.jp'):
+    _base = '{}://{}{}/{}'
+
+    def __init__(self, api_name, scheme='https', host='api.zaif.jp', port=None):
         self._scheme = scheme
         self._host = host
         self._api_name = api_name
+        self._port = port
 
     def get_base_url(self):
-        base = '{}://{}/{}'
-        return base.format(self._scheme, self._host, self._api_name)
+        return self._base.format(self._scheme, self._host, self._get_port(), self._api_name)
+
+    def add_directories(self, *args):
+        url = self.get_base_url()
+        for arg in args:
+            url += '/{}'.format(arg)
+        return url
+
+    def _get_port(self):
+        if self._port:
+            return ':{}'.format(self._port)
+        return ''
 
 
 class PublicBaseUrl(BaseUrl):
@@ -16,8 +29,11 @@ class PublicBaseUrl(BaseUrl):
 
     def get_base_url(self):
         base = super().get_base_url()
-        return '{}/{}'.format(base, self._version)
+        return base + '/{}'.format(self._version)
 
 
 class TradeBaseUrl(BaseUrl):
+    pass
+
+class StreamBaseUrl(BaseUrl):
     pass

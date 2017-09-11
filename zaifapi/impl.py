@@ -15,7 +15,7 @@ from zaifapi.api_error import ZaifApiError, ZaifApiNonceError
 
 from .validator import ZaifApiValidator, SCHEMA
 from .url import PublicBaseUrl, TradeBaseUrl
-
+from .util import method_name
 
 _MAX_COUNT = 1000
 _MIN_WAIT_TIME_SEC = 1
@@ -85,22 +85,22 @@ class ZaifPublicApi(SpotPublicApiImpl):
         return json.loads(response.text)
 
     def last_price(self, currency_pair):
-        return self._execute_api(inspect.currentframe().f_code.co_name, currency_pair)
+        return self._execute_api(method_name(), currency_pair)
 
     def ticker(self, currency_pair):
-        return self._execute_api(inspect.currentframe().f_code.co_name, currency_pair)
+        return self._execute_api(method_name(), currency_pair)
 
     def trades(self, currency_pair):
-        return self._execute_api(inspect.currentframe().f_code.co_name, currency_pair)
+        return self._execute_api(method_name(), currency_pair)
 
     def depth(self, currency_pair):
-        return self._execute_api(inspect.currentframe().f_code.co_name, currency_pair)
+        return self._execute_api(method_name(), currency_pair)
 
     def currency_pairs(self, currency_pair):
-        return self._execute_api(inspect.currentframe().f_code.co_name, currency_pair)
+        return self._execute_api(method_name(), currency_pair)
 
     def currencies(self, currency):
-        return self._execute_api(inspect.currentframe().f_code.co_name, currency)
+        return self._execute_api(method_name(), currency)
 
 
 class ZaifFuturesPublicApi(FuturesPublicApiImpl):
@@ -116,19 +116,19 @@ class ZaifFuturesPublicApi(FuturesPublicApiImpl):
         return json.loads(response.text)
 
     def last_price(self, group_id, currency_pair):
-        return self._execute_api(inspect.currentframe().f_code.co_name, group_id, currency_pair)
+        return self._execute_api(method_name(), group_id, currency_pair)
 
     def ticker(self, group_id, currency_pair):
-        return self._execute_api(inspect.currentframe().f_code.co_name, group_id, currency_pair)
+        return self._execute_api(method_name(), group_id, currency_pair)
 
     def trades(self, group_id, currency_pair):
-        return self._execute_api(inspect.currentframe().f_code.co_name, group_id, currency_pair)
+        return self._execute_api(method_name(), group_id, currency_pair)
 
     def depth(self, group_id, currency_pair):
-        return self._execute_api(inspect.currentframe().f_code.co_name, group_id, currency_pair)
+        return self._execute_api(method_name(), group_id, currency_pair)
 
     def groups(self, group_id):
-        return self._execute_api(inspect.currentframe().f_code.co_name, group_id)
+        return self._execute_api(method_name(), group_id)
 
 
 # class ZaifPublicStreamApi(ZaifPublicApiBase):
@@ -146,113 +146,139 @@ class ZaifFuturesPublicApi(FuturesPublicApiImpl):
 #             yield json.loads(result)
 #         ws.close()
 #
-#
-# class _AbsZaifTradeApi(AbsZaifApi):
-#     _API_URL = '{}://{}/tapi'
-#
-#     @abstractmethod
-#     def get_header(self, params):
-#         raise NotImplementedError()
-#
-#     @staticmethod
-#     def _get_nonce():
-#         now = datetime.now()
-#         nonce = str(int(time.mktime(now.timetuple())))
-#         microseconds = '{0:06d}'.format(now.microsecond)
-#         return Decimal(nonce + '.' + microseconds)
-#
-#     def _get_parameter(self, func_name, params):
-#         params['method'] = func_name
-#         params['nonce'] = self._get_nonce()
-#         return urlencode(params)
-#
-#     def _execute_api(self, func_name, schema_keys=None, params=None):
-#         if schema_keys is None:
-#             schema_keys = []
-#         if params is None:
-#             params = {}
-#         params = self.params_pre_processing(schema_keys, params)
-#         params = self._get_parameter(func_name, params)
-#         header = self.get_header(params)
-#         res = get_response(self._API_URL.format(self.get_protocol(), self._api_domain), params, header)
-#         if res['success'] == 0:
-#             if res['error'].startswith('nonce'):
-#                 raise ZaifApiNonceError(res['error'])
-#             raise ZaifApiError(res['error'])
-#         return res['return']
-#
-#     def get_info(self):
-#         return self._execute_api(inspect.currentframe().f_code.co_name)
-#
-#     def get_info2(self):
-#         return self._execute_api(inspect.currentframe().f_code.co_name)
-#
-#     def get_personal_info(self):
-#         return self._execute_api(inspect.currentframe().f_code.co_name)
-#
-#     def get_id_info(self):
-#         return self._execute_api(inspect.currentframe().f_code.co_name)
-#
-#     def trade_history(self, **kwargs):
-#         schema_keys = ['from_num', 'count', 'from_id', 'end_id', 'order', 'since', 'end', 'currency_pair', 'is_token']
-#         return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
-#
-#     def active_orders(self, **kwargs):
-#         schema_keys = ['currency_pair', 'is_token', 'is_token_both']
-#         return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
-#
-#     def _inner_history_api(self, func_name, kwargs):
-#         schema_keys = ['currency', 'from_num', 'count', 'from_id', 'end_id', 'order', 'since', 'end', 'is_token']
-#         return self._execute_api(func_name, schema_keys, kwargs)
-#
-#     def withdraw_history(self, **kwargs):
-#         return self._inner_history_api(inspect.currentframe().f_code.co_name, kwargs)
-#
-#     def deposit_history(self, **kwargs):
-#         return self._inner_history_api(inspect.currentframe().f_code.co_name, kwargs)
-#
-#     def withdraw(self, **kwargs):
-#         schema_keys = ['currency', 'address', 'message', 'amount', 'opt_fee']
-#         return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
-#
-#     def cancel_order(self, **kwargs):
-#         schema_keys = ['order_id', 'is_token', 'currency_pair']
-#         return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
-#
-#     def trade(self, **kwargs):
-#         schema_keys = ['currency_pair', 'action', 'price', 'amount', 'limit', 'comment']
-#         return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
-#
-#
-# class ZaifTradeApi(_AbsZaifTradeApi):
-#     def __init__(self, key, secret):
-#         self._key = key
-#         self._secret = secret
-#         super(ZaifTradeApi, self).__init__()
-#
-#     def get_header(self, params):
-#         signature = hmac.new(bytearray(self._secret.encode('utf-8')), digestmod=hashlib.sha512)
-#         signature.update(params.encode('utf-8'))
-#         return {
-#             'key': self._key,
-#             'sign': signature.hexdigest()
-#         }
-#
-#
-# class ZaifTokenTradeApi(_AbsZaifTradeApi):
-#     def __init__(self, token):
-#         self._token = token
-#         super(ZaifTokenTradeApi, self).__init__()
-#
-#     def get_header(self, params):
-#         return {
-#             'token': self._token
-#         }
-#
-#
-# class ZaifFuturesPublicApi:
-#     pass
-#
-#
-# class ZaifLeverageTradeApi:
-#     pass
+
+class ZaifTradeApiBase(ZaifExchangeApiCore, metaclass=ABCMeta):
+    @abstractmethod
+    def get_header(self, params):
+        raise NotImplementedError()
+
+    @staticmethod
+    def _get_nonce():
+        now = datetime.now()
+        nonce = str(int(time.mktime(now.timetuple())))
+        microseconds = '{0:06d}'.format(now.microsecond)
+        return Decimal(nonce + '.' + microseconds)
+
+    def _get_parameter(self, func_name, params):
+        params['method'] = func_name
+        params['nonce'] = self._get_nonce()
+        return urlencode(params)
+
+    def _execute_api(self, func_name, schema_keys=None, params=None):
+        if schema_keys is None:
+            schema_keys = []
+        if params is None:
+            params = {}
+        params = self.params_pre_processing(schema_keys, params)
+        params = self._get_parameter(func_name, params)
+        header = self.get_header(params)
+        res = get_response(self._API_URL.format(self.get_protocol(), self._api_domain), params, header)
+        if res['success'] == 0:
+            if res['error'].startswith('nonce'):
+                raise ZaifApiNonceError(res['error'])
+            raise ZaifApiError(res['error'])
+        return res['return']
+
+
+class SpotTradeApiImpl(ZaifTradeApiBase):
+    def __init__(self):
+        super().__init__(TradeBaseUrl(api_name='tapi').get_base_url())
+
+    @abstractmethod
+    def get_header(self, params):
+        raise NotImplementedError()
+
+    @staticmethod
+    def _get_nonce():
+        now = datetime.now()
+        nonce = str(int(time.mktime(now.timetuple())))
+        microseconds = '{0:06d}'.format(now.microsecond)
+        return Decimal(nonce + '.' + microseconds)
+
+    def _get_parameter(self, func_name, params):
+        params['method'] = func_name
+        params['nonce'] = self._get_nonce()
+        return urlencode(params)
+
+    def _execute_api(self, func_name, schema_keys=None, params=None):
+        if schema_keys is None:
+            schema_keys = []
+        if params is None:
+            params = {}
+        params = self.params_pre_processing(schema_keys, params)
+        params = self._get_parameter(func_name, params)
+        header = self.get_header(params)
+        res = get_response(self._base_url, params, header)
+        if res['success'] == 0:
+            if res['error'].startswith('nonce'):
+                raise ZaifApiNonceError(res['error'])
+            raise ZaifApiError(res['error'])
+        return res['return']
+
+    def get_info(self):
+        return self._execute_api(inspect.currentframe().f_code.co_name)
+
+    def get_info2(self):
+        return self._execute_api(inspect.currentframe().f_code.co_name)
+
+    def get_personal_info(self):
+        return self._execute_api(inspect.currentframe().f_code.co_name)
+
+    def get_id_info(self):
+        return self._execute_api(inspect.currentframe().f_code.co_name)
+
+    def trade_history(self, **kwargs):
+        schema_keys = ['from_num', 'count', 'from_id', 'end_id', 'order', 'since', 'end', 'currency_pair', 'is_token']
+        return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
+
+    def active_orders(self, **kwargs):
+        schema_keys = ['currency_pair', 'is_token', 'is_token_both']
+        return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
+
+    def _inner_history_api(self, func_name, kwargs):
+        schema_keys = ['currency', 'from_num', 'count', 'from_id', 'end_id', 'order', 'since', 'end', 'is_token']
+        return self._execute_api(func_name, schema_keys, kwargs)
+
+    def withdraw_history(self, **kwargs):
+        return self._inner_history_api(inspect.currentframe().f_code.co_name, kwargs)
+
+    def deposit_history(self, **kwargs):
+        return self._inner_history_api(inspect.currentframe().f_code.co_name, kwargs)
+
+    def withdraw(self, **kwargs):
+        schema_keys = ['currency', 'address', 'message', 'amount', 'opt_fee']
+        return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
+
+    def cancel_order(self, **kwargs):
+        schema_keys = ['order_id', 'is_token', 'currency_pair']
+        return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
+
+    def trade(self, **kwargs):
+        schema_keys = ['currency_pair', 'action', 'price', 'amount', 'limit', 'comment']
+        return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
+
+
+class ZaifTradeApi(SpotTradeApiImpl):
+    def __init__(self, key, secret):
+        self._key = key
+        self._secret = secret
+        super(ZaifTradeApi, self).__init__()
+
+    def get_header(self, params):
+        signature = hmac.new(bytearray(self._secret.encode('utf-8')), digestmod=hashlib.sha512)
+        signature.update(params.encode('utf-8'))
+        return {
+            'key': self._key,
+            'sign': signature.hexdigest()
+        }
+
+
+class ZaifTokenTradeApi(SpotTradeApiImpl):
+    def __init__(self, token):
+        self._token = token
+        super(ZaifTokenTradeApi, self).__init__()
+
+    def get_header(self, params):
+        return {
+            'token': self._token
+        }
