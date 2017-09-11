@@ -1,6 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from zaifapi.api_common import get_response, AbsZaifBaseApi
+from zaifapi.api_common import get_response
+
+
+# todo: 消す
+class AbsZaifBaseApi(object):
+    __metaclass__ = ABCMeta
+    _use_https = True
+
+    def get_protocol(self):
+        if self._use_https:
+            return 'https'
+        return 'http'
 
 
 class ZaifTokenApi(AbsZaifBaseApi):
