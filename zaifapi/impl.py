@@ -5,12 +5,15 @@ import hashlib
 import inspect
 from websocket import create_connection
 from .url import PublicBaseUrl, TradeBaseUrl, StreamBaseUrl
-from .util import method_name
 from .core import ZaifTradeApiBase, ZaifPublicApiBase, ZaifExchangeApiCore
 
 
 _MAX_COUNT = 1000
 _MIN_WAIT_TIME_SEC = 1
+
+
+def _method_name():
+    return inspect.stack()[1][3]
 
 
 class ZaifPublicApi(ZaifPublicApiBase):
@@ -19,27 +22,27 @@ class ZaifPublicApi(ZaifPublicApiBase):
 
     def last_price(self, currency_pair):
         schema_keys = ['currency_pair']
-        return self._execute_api(method_name(), schema_keys, currency_pair=currency_pair)
+        return self._execute_api(_method_name(), schema_keys, currency_pair=currency_pair)
 
     def ticker(self, currency_pair):
         schema_keys = ['currency_pair']
-        return self._execute_api(method_name(), schema_keys, currency_pair=currency_pair)
+        return self._execute_api(_method_name(), schema_keys, currency_pair=currency_pair)
 
     def trades(self, currency_pair):
         schema_keys = ['currency_pair']
-        return self._execute_api(method_name(), schema_keys, currency_pair=currency_pair)
+        return self._execute_api(_method_name(), schema_keys, currency_pair=currency_pair)
 
     def depth(self, currency_pair):
         schema_keys = ['currency_pair']
-        return self._execute_api(method_name(), schema_keys, currency_pair=currency_pair)
+        return self._execute_api(_method_name(), schema_keys, currency_pair=currency_pair)
 
     def currency_pairs(self, currency_pair):
         schema_keys = ['currency_pair']
-        return self._execute_api(method_name(), schema_keys, currency_pair=currency_pair)
+        return self._execute_api(_method_name(), schema_keys, currency_pair=currency_pair)
 
     def currencies(self, currency):
         schema_keys = ['currency']
-        return self._execute_api(method_name(), schema_keys, currency=currency)
+        return self._execute_api(_method_name(), schema_keys, currency=currency)
 
 
 class ZaifFuturesPublicApi(ZaifPublicApiBase):
@@ -48,23 +51,23 @@ class ZaifFuturesPublicApi(ZaifPublicApiBase):
 
     def last_price(self, group_id, currency_pair):
         schema_keys = ['currency_pair', 'group_id']
-        return self._execute_api(method_name(), schema_keys, group_id=group_id, currency_pair=currency_pair)
+        return self._execute_api(_method_name(), schema_keys, group_id=group_id, currency_pair=currency_pair)
 
     def ticker(self, group_id, currency_pair):
         schema_keys = ['currency_pair', 'group_id']
-        return self._execute_api(method_name(), schema_keys, group_id=group_id, currency_pair=currency_pair)
+        return self._execute_api(_method_name(), schema_keys, group_id=group_id, currency_pair=currency_pair)
 
     def trades(self, group_id, currency_pair):
         schema_keys = ['currency_pair', 'group_id']
-        return self._execute_api(method_name(), schema_keys, group_id=group_id, currency_pair=currency_pair)
+        return self._execute_api(_method_name(), schema_keys, group_id=group_id, currency_pair=currency_pair)
 
     def depth(self, group_id, currency_pair):
         schema_keys = ['currency_pair', 'group_id']
-        return self._execute_api(method_name(), schema_keys, group_id=group_id, currency_pair=currency_pair)
+        return self._execute_api(_method_name(), schema_keys, group_id=group_id, currency_pair=currency_pair)
 
     def groups(self, group_id):
         schema_keys = ['group_id']
-        return self._execute_api(method_name(), schema_keys, group_id=group_id)
+        return self._execute_api(_method_name(), schema_keys, group_id=group_id)
 
 
 class ZaifTradeApi(ZaifTradeApiBase):
