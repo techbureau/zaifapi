@@ -14,7 +14,7 @@ from zaifapi.api_common import get_response
 from zaifapi.api_error import ZaifApiError, ZaifApiNonceError
 
 from .validator import ZaifApiValidator, SCHEMA
-from .url import PublicBaseUrl, TradeBaseUrl
+from .url import PublicBaseUrl, TradeBaseUrl, StreamBaseUrl
 from .util import method_name
 
 _MAX_COUNT = 1000
@@ -22,8 +22,8 @@ _MIN_WAIT_TIME_SEC = 1
 
 
 class ZaifExchangeApiCore(metaclass=ABCMeta):
-    def __init__(self, base_url):
-        self._base_url = base_url
+    def __init__(self, url):
+        self._url = url
         self._schema = self._override_schema(SCHEMA)
 
     def params_pre_processing(self, schema_keys, params):
@@ -56,96 +56,74 @@ class ZaifExchangeApiCore(metaclass=ABCMeta):
 
 
 class ZaifPublicApiBase(ZaifExchangeApiCore, metaclass=ABCMeta):
-    pass
+    def _execute_api(self, func_name, schema_keys=None, params=None, **kwargs):
+        schema_keys = schema_keys or []
+        params = params or {}
 
-
-class SpotPublicApiImpl(ZaifPublicApiBase):
-    def __init__(self):
-        super().__init__(PublicBaseUrl(api_name='api', version=1).get_base_url())
-
-    def _override_schema(self, default_scheme):
-        return default_scheme
-
-
-class FuturesPublicApiImpl(ZaifPublicApiBase):
-    def __init__(self):
-        super().__init__(PublicBaseUrl(api_name='fapi', version=1).get_base_url())
-
-    def _override_schema(self, default_scheme):
-        return default_scheme
-
-
-class ZaifPublicApi(SpotPublicApiImpl):
-    def _execute_api(self, func_name, currency_pair, params=None):
-        self.params_pre_processing(['currency_pair'], {'currency_pair': currency_pair})
-        url = '{}/{}/{}'.format(self._base_url, func_name, currency_pair)
+        self.params_pre_processing(schema_keys, kwargs)
+        url = self._url.create_url(func_name, *kwargs.values())
         response = requests.get(url, params=params)
         if response.status_code != 200:
             raise Exception('return status code is {}'.format(response.status_code))
         return json.loads(response.text)
+
+    def _override_schema(self, default_scheme):
+        return default_scheme
+
+
+class ZaifPublicApi(ZaifPublicApiBase):
+    def __init__(self):
+        super().__init__(PublicBaseUrl(api_name='api', version=1))
 
     def last_price(self, currency_pair):
-        return self._execute_api(method_name(), currency_pair)
+        schema_keys = ['currency_pair']
+        return self._execute_api(method_name(), schema_keys, currency_pair=currency_pair)
 
     def ticker(self, currency_pair):
-        return self._execute_api(method_name(), currency_pair)
+        schema_keys = ['currency_pair']
+        return self._execute_api(method_name(), schema_keys, currency_pair=currency_pair)
 
     def trades(self, currency_pair):
-        return self._execute_api(method_name(), currency_pair)
+        schema_keys = ['currency_pair']
+        return self._execute_api(method_name(), schema_keys, currency_pair=currency_pair)
 
     def depth(self, currency_pair):
-        return self._execute_api(method_name(), currency_pair)
+        schema_keys = ['currency_pair']
+        return self._execute_api(method_name(), schema_keys, currency_pair=currency_pair)
 
     def currency_pairs(self, currency_pair):
-        return self._execute_api(method_name(), currency_pair)
+        schema_keys = ['currency_pair']
+        return self._execute_api(method_name(), schema_keys, currency_pair=currency_pair)
 
     def currencies(self, currency):
-        return self._execute_api(method_name(), currency)
+        schema_keys = ['currency']
+        return self._execute_api(method_name(), schema_keys, currency=currency)
 
 
-class ZaifFuturesPublicApi(FuturesPublicApiImpl):
-    def _execute_api(self, func_name, group_id, currency_pair='', params=None):
-        self.params_pre_processing(['currency_pair', 'group_id'], {'currency_pair': currency_pair, 'group_id': group_id})
-        if currency_pair is None:
-            url = '{}/{}/{}'.format(self._base_url, func_name, group_id)
-        else:
-            url = '{}/{}/{}/{}'.format(self._base_url, func_name, group_id, currency_pair)
-        response = requests.get(url, params=params)
-        if response.status_code != 200:
-            raise Exception('return status code is {}'.format(response.status_code))
-        return json.loads(response.text)
+class ZaifFuturesPublicApi(ZaifPublicApiBase):
+    def __init__(self):
+        super().__init__(PublicBaseUrl(api_name='fapi', version=1))
 
     def last_price(self, group_id, currency_pair):
-        return self._execute_api(method_name(), group_id, currency_pair)
+        schema_keys = ['currency_pair', 'group_id']
+        return self._execute_api(method_name(), schema_keys, group_id=group_id, currency_pair=currency_pair)
 
     def ticker(self, group_id, currency_pair):
-        return self._execute_api(method_name(), group_id, currency_pair)
+        schema_keys = ['currency_pair', 'group_id']
+        return self._execute_api(method_name(), schema_keys, group_id=group_id, currency_pair=currency_pair)
 
     def trades(self, group_id, currency_pair):
-        return self._execute_api(method_name(), group_id, currency_pair)
+        schema_keys = ['currency_pair', 'group_id']
+        return self._execute_api(method_name(), schema_keys, group_id=group_id, currency_pair=currency_pair)
 
     def depth(self, group_id, currency_pair):
-        return self._execute_api(method_name(), group_id, currency_pair)
+        schema_keys = ['currency_pair', 'group_id']
+        return self._execute_api(method_name(), schema_keys, group_id=group_id, currency_pair=currency_pair)
 
     def groups(self, group_id):
-        return self._execute_api(method_name(), group_id)
+        schema_keys = ['group_id']
+        return self._execute_api(method_name(), schema_keys, group_id=group_id)
 
-
-# class ZaifPublicStreamApi(ZaifPublicApiBase):
-#     def __init__(self):
-#         self._continue = True
-#
-#     def stop(self):
-#         self._continue = False
-#
-#     def execute(self, currency_pair):
-#         self._params_pre_processing(currency_pair)
-#         ws = create_connection('wss://ws.zaif.jp:8888/stream?currency_pair={}'.format(currency_pair))
-#         while self._continue:
-#             result = ws.recv()
-#             yield json.loads(result)
-#         ws.close()
-#
 
 class ZaifTradeApiBase(ZaifExchangeApiCore, metaclass=ABCMeta):
     @abstractmethod
@@ -165,55 +143,36 @@ class ZaifTradeApiBase(ZaifExchangeApiCore, metaclass=ABCMeta):
         return urlencode(params)
 
     def _execute_api(self, func_name, schema_keys=None, params=None):
-        if schema_keys is None:
-            schema_keys = []
-        if params is None:
-            params = {}
+        schema_keys = schema_keys or []
+        params = params or {}
         params = self.params_pre_processing(schema_keys, params)
         params = self._get_parameter(func_name, params)
         header = self.get_header(params)
-        res = get_response(self._API_URL.format(self.get_protocol(), self._api_domain), params, header)
+        url = self._url.create_url()
+        res = get_response(url, params, header)
         if res['success'] == 0:
             if res['error'].startswith('nonce'):
                 raise ZaifApiNonceError(res['error'])
             raise ZaifApiError(res['error'])
         return res['return']
 
+    def _override_schema(self, default_scheme):
+        return default_scheme
 
-class SpotTradeApiImpl(ZaifTradeApiBase):
-    def __init__(self):
-        super().__init__(TradeBaseUrl(api_name='tapi').get_base_url())
 
-    @abstractmethod
+class ZaifTradeApi(ZaifTradeApiBase):
+    def __init__(self, key, secret):
+        self._key = key
+        self._secret = secret
+        super().__init__(url=TradeBaseUrl(api_name='tapi'))
+
     def get_header(self, params):
-        raise NotImplementedError()
-
-    @staticmethod
-    def _get_nonce():
-        now = datetime.now()
-        nonce = str(int(time.mktime(now.timetuple())))
-        microseconds = '{0:06d}'.format(now.microsecond)
-        return Decimal(nonce + '.' + microseconds)
-
-    def _get_parameter(self, func_name, params):
-        params['method'] = func_name
-        params['nonce'] = self._get_nonce()
-        return urlencode(params)
-
-    def _execute_api(self, func_name, schema_keys=None, params=None):
-        if schema_keys is None:
-            schema_keys = []
-        if params is None:
-            params = {}
-        params = self.params_pre_processing(schema_keys, params)
-        params = self._get_parameter(func_name, params)
-        header = self.get_header(params)
-        res = get_response(self._base_url, params, header)
-        if res['success'] == 0:
-            if res['error'].startswith('nonce'):
-                raise ZaifApiNonceError(res['error'])
-            raise ZaifApiError(res['error'])
-        return res['return']
+        signature = hmac.new(bytearray(self._secret.encode('utf-8')), digestmod=hashlib.sha512)
+        signature.update(params.encode('utf-8'))
+        return {
+            'key': self._key,
+            'sign': signature.hexdigest()
+        }
 
     def get_info(self):
         return self._execute_api(inspect.currentframe().f_code.co_name)
@@ -258,27 +217,33 @@ class SpotTradeApiImpl(ZaifTradeApiBase):
         return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
 
 
-class ZaifTradeApi(SpotTradeApiImpl):
-    def __init__(self, key, secret):
-        self._key = key
-        self._secret = secret
-        super(ZaifTradeApi, self).__init__()
+class ZaifPublicStreamApi(ZaifExchangeApiCore):
+    def __init__(self):
+        self._continue = True
+        super().__init__(url=StreamBaseUrl(api_name='stream', scheme='wss', host='ws.zaif.jp', port=8888))
 
-    def get_header(self, params):
-        signature = hmac.new(bytearray(self._secret.encode('utf-8')), digestmod=hashlib.sha512)
-        signature.update(params.encode('utf-8'))
-        return {
-            'key': self._key,
-            'sign': signature.hexdigest()
-        }
+    def stop(self):
+        self._continue = False
+
+    def execute(self, currency_pair):
+        self.params_pre_processing(currency_pair)
+        url = self._url.create_url() + '?currency_pair={}'.format(currency_pair)
+        ws = create_connection(url)
+        while self._continue:
+            result = ws.recv()
+            yield json.loads(result)
+        ws.close()
+
+    def _override_schema(self, default_scheme):
+        return default_scheme
 
 
-class ZaifTokenTradeApi(SpotTradeApiImpl):
-    def __init__(self, token):
-        self._token = token
-        super(ZaifTokenTradeApi, self).__init__()
-
-    def get_header(self, params):
-        return {
-            'token': self._token
-        }
+# class ZaifTokenTradeApi(SpotTradeApiImpl):
+#     def __init__(self, token):
+#         self._token = token
+#         super(ZaifTokenTradeApi, self).__init__()
+#
+#     def get_header(self, params):
+#         return {
+#             'token': self._token
+#         }
