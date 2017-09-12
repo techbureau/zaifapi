@@ -1,3 +1,6 @@
+# Importing from this module is deprecated
+# This module will be removed in the future
+
 _MAX_COUNT = 1000
 _MIN_WAIT_TIME_SEC = 1
 
