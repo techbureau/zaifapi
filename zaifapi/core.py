@@ -5,7 +5,7 @@ import requests
 from decimal import Decimal
 from datetime import datetime
 from abc import ABCMeta, abstractmethod
-from future.moves.urllib.parse import urlencode
+from urllib.parse import urlencode
 from zaifapi.api_common import get_response
 from zaifapi.api_error import ZaifApiError, ZaifApiNonceError, ZaifApiValidationError
 from .validator import ZaifApiValidator, SCHEMA
