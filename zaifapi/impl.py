@@ -75,6 +75,30 @@ class ZaifFuturesPublicApi(ZaifPublicApiBase):
         return self._execute_api(_method_name(), schema_keys, group_id=group_id)
 
 
+class ZaifPublicStreamApi(ZaifPublicApiBase):
+    def __init__(self):
+        super().__init__(
+            ApiUrl(api_name='stream',
+                   scheme='wss',
+                   host='ws.zaif.jp',
+                   port=8888)
+        )
+        self._continue = True
+
+    def stop(self):
+        self._continue = False
+
+    def execute(self, currency_pair):
+        self.params_pre_processing(['currency_pair'], params={'currency_pair': currency_pair})
+        self._url.add_param('currency_pair', currency_pair)
+        print(self._url.full_url())
+        ws = create_connection(self._url.full_url())
+        while self._continue:
+            result = ws.recv()
+            yield json.loads(result)
+        ws.close()
+
+
 # class ZaifTradeApi(ZaifTradeApiBase):
 #     def __init__(self, key, secret):
 #         self._key = key
@@ -132,25 +156,7 @@ class ZaifFuturesPublicApi(ZaifPublicApiBase):
 #         return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
 #
 #
-# class ZaifPublicStreamApi(ZaifExchangeApiCore):
-#     def __init__(self):
-#         self._continue = True
-#         super().__init__(url=StreamBaseUrl(api_name='stream', scheme='wss', host='ws.zaif.jp', port=8888))
-#
-#     def stop(self):
-#         self._continue = False
-#
-#     def execute(self, currency_pair):
-#         self.params_pre_processing(currency_pair)
-#         url = self._url.create_url() + '?currency_pair={}'.format(currency_pair)
-#         ws = create_connection(url)
-#         while self._continue:
-#             result = ws.recv()
-#             yield json.loads(result)
-#         ws.close()
-#
-#     def _override_schema(self, default_scheme):
-#         return default_scheme
+
 
 
 # class ZaifTokenTradeApi(SpotTradeApiImpl):

@@ -22,10 +22,6 @@ class ZaifPublicApiBase(ZaifExchangeApi):
         return json.loads(response.text)
 
 
-class SpotPublicApiValidator(ZaifApiValidator):
-    pass
-
-
 class FuturesPublicApiValidator(ZaifApiValidator):
     def __init__(self):
         super().__init__()

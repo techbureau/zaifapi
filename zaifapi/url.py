@@ -11,12 +11,12 @@ class ApiUrl:
         self._port = port
         self._q_params = QueryParam(params)
         self._path = path or []
-        self._version = str(version)
+        self._version = version
 
     def base_url(self):
         base = self._base.format(self._scheme, self._host, self._get_port(), self._api_name)
         if self._version:
-            base += '/' + self._version
+            base += '/' + str(self._version)
         return base
 
     def full_url(self):
@@ -41,6 +41,9 @@ class ApiUrl:
             for path in paths:
                 if path is not None:
                     self._path.append(str(path))
+
+    def add_param(self, key, value):
+        self._q_params.add_param(key, value)
 
 
 class QueryParam:
