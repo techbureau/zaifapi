@@ -4,7 +4,7 @@ import hmac
 import hashlib
 import inspect
 from websocket import create_connection
-from zaifapi.public import ZaifPublicApiBase
+from zaifapi.public import ZaifPublicApiBase, FuturesPublicApiValidator
 from zaifapi.url import ApiUrl
 
 
@@ -50,10 +50,11 @@ class ZaifPublicApi(ZaifPublicApiBase):
 class ZaifFuturesPublicApi(ZaifPublicApiBase):
     def __init__(self):
         super().__init__(
-            ApiUrl(api_name='fapi', version=1)
+            ApiUrl(api_name='fapi', version=1),
+            FuturesPublicApiValidator()
         )
 
-    def last_price(self, group_id, currency_pair):
+    def last_price(self, group_id, currency_pair=None):
         schema_keys = ['currency_pair', 'group_id']
         return self._execute_api(_method_name(), schema_keys, group_id=group_id, currency_pair=currency_pair)
 

@@ -4,6 +4,7 @@ import requests
 from abc import ABCMeta
 from zaifapi.core import ZaifExchangeApi
 from zaifapi.api_error import ZaifApiError
+from zaifapi.validator import ZaifApiValidator
 
 
 class ZaifPublicApiBase(ZaifExchangeApi):
@@ -19,3 +20,18 @@ class ZaifPublicApiBase(ZaifExchangeApi):
         if response.status_code != 200:
             raise ZaifApiError('return status code is {}'.format(response.status_code))
         return json.loads(response.text)
+
+
+class SpotPublicApiValidator(ZaifApiValidator):
+    pass
+
+
+class FuturesPublicApiValidator(ZaifApiValidator):
+    def __init__(self):
+        super().__init__()
+        self._schema.updates({
+            'currency_pair': {
+                'type': 'string',
+                'nullable': True
+            },
+        })

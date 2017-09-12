@@ -34,11 +34,13 @@ class ApiUrl:
         return ''
 
     def add_path(self, path, *paths):
-        self._path.append(str(path))
+        if path is not None:
+            self._path.append(str(path))
 
         if len(paths) > 0:
             for path in paths:
-                self._path.append(str(path))
+                if path is not None:
+                    self._path.append(str(path))
 
 
 class QueryParam:

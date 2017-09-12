@@ -47,8 +47,12 @@ class _ZaifValidationSchema:
     def select(self, keys):
         return dict(filter(lambda item: item[0] in keys, self._schema.items()))
 
-    def update(self, key, value):
-        pass
+    def update(self, k, v):
+        self._schema[k] = v
+
+    def updates(self, dictionary):
+        for k, v, in dictionary.items():
+            self.update(k, v)
 
 
 DEFAULT_SCHEMA = {
