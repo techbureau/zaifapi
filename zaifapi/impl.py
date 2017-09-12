@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Importing from this module is deprecated
 # This module will be removed in the future
 
