@@ -4,9 +4,8 @@ import requests
 from abc import ABCMeta
 from zaifapi.core import ZaifExchangeApi
 from zaifapi.api_error import ZaifApiError
-from zaifapi.validator import FuturesPublicApiValidator
 from websocket import create_connection
-from zaifapi.api_common import method_name, ApiUrl
+from zaifapi.api_common import method_name, ApiUrl, FuturesPublicApiValidator
 
 
 class _ZaifPublicApiBase(ZaifExchangeApi):

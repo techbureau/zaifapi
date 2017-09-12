@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from abc import ABCMeta
-from .validator import ZaifApiValidator
+from zaifapi.api_common import ZaifApiValidator
 
 
 class ZaifApi:
