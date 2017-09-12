@@ -170,7 +170,42 @@ class ZaifTokenTradeApi(ZaifTradeApi):
 
 
 class ZaifLeverageTradeApi(ZaifTradeApiBase):
-    def __init__(self):
+    def __init__(self, key, secret):
         super().__init__(
             ApiUrl(api_name='tlapi')
         )
+        self._key = key
+        self._secret = secret
+
+    def get_header(self, params):
+        signature = hmac.new(bytearray(self._secret.encode('utf-8')), digestmod=hashlib.sha512)
+        signature.update(params.encode('utf-8'))
+        return {
+            'key': self._key,
+            'sign': signature.hexdigest()
+        }
+
+    def get_positions(self, **kwargs):
+        schema_keys = ['type', 'group_id', 'from_num', 'count',
+                       'from_id', 'end_id', 'order', 'since', 'end', 'currency_pair']
+        return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
+
+    def position_history(self, **kwargs):
+        schema_keys = ['type', 'group_id', 'leverage_id']
+        return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
+
+    def active_positions(self, func_name, kwargs):
+        schema_keys = ['type', 'group_id', 'currency_pair']
+        return self._execute_api(func_name, schema_keys, kwargs)
+
+    def create_position(self, func_name, kwargs):
+        schema_keys = ['type', 'group_id', 'currency_pair', 'action', 'price', 'amount', 'leverage', 'limit', 'stop']
+        return self._execute_api(func_name, schema_keys, kwargs)
+
+    def change_position(self, func_name, kwargs):
+        schema_keys = ['type', 'group_id', 'leverage_id', 'price', 'limit', 'stop']
+        return self._execute_api(func_name, schema_keys, kwargs)
+
+    def cancel_position(self, **kwargs):
+        schema_keys = ['type', 'group_id', 'leverage_id']
+        return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)

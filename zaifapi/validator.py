@@ -126,5 +126,15 @@ DEFAULT_SCHEMA = {
     },
     'group_id': {
         'type': ['string', 'integer']
+    },
+    'type': {
+        'type': 'string',
+        'allowed': ['margin', 'futures']
+    },
+    'leverage': {
+        'type': ['number', 'decimal']
+    },
+    'leverage_id': {
+        'type': 'integer',
     }
 }
