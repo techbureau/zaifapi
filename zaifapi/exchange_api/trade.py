@@ -36,7 +36,7 @@ class _ZaifTradeApiBase(ZaifExchangeApi):
         self.params_pre_processing(schema_keys, params)
         params = self._get_parameter(func_name, params)
         header = self.get_header(params)
-        url = self._url.full_url()
+        url = self._url.get_absolute_url()
         res = get_response(url, params, header)
         if res['success'] == 0:
             if res['error'].startswith('nonce'):

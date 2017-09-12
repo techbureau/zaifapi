@@ -17,8 +17,8 @@ class _ZaifPublicApiBase(ZaifExchangeApi):
         q_params = q_params or {}
 
         self.params_pre_processing(schema_keys, kwargs)
-        self._url.add_path(func_name, *kwargs.values())
-        response = requests.get(self._url.full_url(), params=q_params)
+        self._url.add_dirs(func_name, *kwargs.values())
+        response = requests.get(self._url.get_absolute_url(), params=q_params)
         if response.status_code != 200:
             raise ZaifApiError('return status code is {}'.format(response.status_code))
         return json.loads(response.text)
@@ -87,7 +87,7 @@ class ZaifPublicStreamApi(_ZaifPublicApiBase):
     def __init__(self):
         super().__init__(
             ApiUrl(api_name='stream',
-                   scheme='wss',
+                   protocol='wss',
                    host='ws.zaif.jp',
                    port=8888)
         )
@@ -98,8 +98,8 @@ class ZaifPublicStreamApi(_ZaifPublicApiBase):
 
     def execute(self, currency_pair):
         self.params_pre_processing(['currency_pair'], params={'currency_pair': currency_pair})
-        self._url.add_param('currency_pair', currency_pair)
-        ws = create_connection(self._url.full_url())
+        self._url.add_q_params({'currency_pair': currency_pair})
+        ws = create_connection(self._url.get_absolute_url(with_params=True))
         while self._continue:
             result = ws.recv()
             yield json.loads(result)

@@ -14,7 +14,7 @@ class ZaifExchangeApi(ZaifApi):
         return self._validator.params_pre_processing(keys, params)
 
 
-from .public import ZaifPublicApi, ZaifFuturesPublicApi
+from .public import ZaifPublicApi, ZaifFuturesPublicApi, ZaifPublicStreamApi
 from .trade import ZaifTokenTradeApi, ZaifTradeApi, ZaifLeverageTradeApi
 
 
@@ -23,5 +23,6 @@ __all__ = [
     'ZaifTradeApi',
     'ZaifTokenTradeApi',
     'ZaifFuturesPublicApi',
-    'ZaifPublicApi'
+    'ZaifPublicApi',
+    'ZaifPublicStreamApi'
 ]

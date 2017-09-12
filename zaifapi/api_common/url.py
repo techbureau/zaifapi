@@ -1,23 +1,24 @@
 # -*- coding: utf-8 -*-
+import itertools
 from urllib.parse import urlencode
 
 
 class ApiUrl:
-    _base = '{}://{}{}'
+    _skeleton_url = '{}://{}{}'
 
-    def __init__(self, api_name, scheme='https', host='api.zaif.jp',
-                 version=None, port=None, path=None, params=None):
+    def __init__(self, api_name, protocol='https', host='api.zaif.jp',
+                 version=None, port=None, dirs=None, params=None):
 
-        self._scheme = scheme
+        self._protocol = protocol
         self._host = host
         self._api_name = api_name
         self._port = port
         self._q_params = _QueryParam(params)
-        self._path = path or []
+        self._dirs = dirs or []
         self._version = version
 
-    def base_url(self):
-        base = self._base.format(self._scheme, self._host, self._get_port())
+    def get_base_url(self):
+        base = self._skeleton_url.format(self._protocol, self._host, self._get_port())
         if self._api_name:
             base += '/' + str(self._api_name)
 
@@ -25,42 +26,46 @@ class ApiUrl:
             base += '/' + str(self._version)
         return base
 
-    def full_url(self):
-        url = self.base_url()
-        for path in self._path:
-            url += '/' + path
-        if len(self._q_params) == 0:
-            return url
-        url += '?' + self._q_params.encode()
-        return url
+    def get_absolute_url(self, *, with_params=False):
+        absolute_url = self.get_base_url() + self.get_pathname()
+        if with_params is True:
+            absolute_url += self._q_params.get_str_params()
+        return absolute_url
+
+    def get_pathname(self):
+        path_name = ''
+        for dir_ in self._dirs:
+            path_name += '/' + str(dir_)
+        return path_name
 
     def _get_port(self):
         if self._port:
             return ':{}'.format(self._port)
         return ''
 
-    def add_path(self, path, *paths):
-        if path is not None:
-            self._path.append(str(path))
+    def add_dirs(self, dir_, *dirs):
+        for dir_ in itertools.chain((dir_, ), dirs):
+            self._dirs.append(str(dir_))
 
-        if len(paths) > 0:
-            for path in paths:
-                if path is not None:
-                    self._path.append(str(path))
-
-    def add_param(self, key, value):
-        self._q_params.add_param(key, value)
+    def add_q_params(self, dict_):
+        for key, value in dict_.items():
+            self._q_params.add_param(key, value)
 
 
 class _QueryParam:
     def __init__(self, params=None):
         self._params = params or {}
 
-    def encode(self):
+    def _encode(self):
         return urlencode(self._params)
 
+    def get_str_params(self):
+        if len(self._params) == 0:
+            return ''
+        return '?' + self._encode()
+
     def __str__(self):
-        return self.encode()
+        return self._encode()
 
     def add_param(self, k, v):
         self._params[k] = v
