@@ -1,9 +1,16 @@
 import inspect
+from abc import ABCMeta
 
 
 def method_name():
     return inspect.stack()[1][3]
 
+
+class ZaifApi:
+    __metaclass__ = ABCMeta
+
+    def __init__(self, url):
+        self._url = url
 
 from .response import get_response
 from .url import ApiUrl

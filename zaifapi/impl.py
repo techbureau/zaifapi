@@ -5,19 +5,18 @@
 _MAX_COUNT = 1000
 _MIN_WAIT_TIME_SEC = 1
 
-
-from zaifapi.trade import (
+from zaifapi.exchange_api.public import (
+    ZaifPublicStreamApi,
+    ZaifPublicApi,
+    ZaifFuturesPublicApi,
+)
+from zaifapi.exchange_api.trade import (
     ZaifTradeApi,
     ZaifLeverageTradeApi,
     ZaifTokenTradeApi,
 )
 
-
-from zaifapi.public import (
-    ZaifPublicStreamApi,
-    ZaifPublicApi,
-    ZaifFuturesPublicApi,
-)
+from zaifapi.oauth import ZaifTokenApi
 
 __all__ = [
     'ZaifTradeApi',
@@ -26,4 +25,5 @@ __all__ = [
     'ZaifPublicStreamApi',
     'ZaifPublicApi',
     'ZaifFuturesPublicApi',
+    'ZaifTokenApi'
 ]

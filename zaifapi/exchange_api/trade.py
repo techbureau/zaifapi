@@ -8,7 +8,7 @@ from abc import ABCMeta, abstractmethod
 from urllib.parse import urlencode
 from zaifapi.api_common import get_response, ApiUrl, method_name
 from zaifapi.api_error import ZaifApiError, ZaifApiNonceError
-from zaifapi.core import ZaifExchangeApi
+from . import ZaifExchangeApi
 
 
 class _ZaifTradeApiBase(ZaifExchangeApi):

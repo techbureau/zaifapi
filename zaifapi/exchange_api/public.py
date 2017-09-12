@@ -2,10 +2,11 @@
 import json
 import requests
 from abc import ABCMeta
-from zaifapi.core import ZaifExchangeApi
+
 from zaifapi.api_error import ZaifApiError
 from websocket import create_connection
 from zaifapi.api_common import method_name, ApiUrl, FuturesPublicApiValidator
+from . import ZaifExchangeApi
 
 
 class _ZaifPublicApiBase(ZaifExchangeApi):
