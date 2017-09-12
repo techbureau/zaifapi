@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from zaifapi.api_common import get_response
+from .core import ZaifApi
 
 
 # todo: 消す
@@ -11,6 +12,10 @@ class AbsZaifBaseApi(object):
         if self._use_https:
             return 'https'
         return 'http'
+
+
+class ZaifTokenApi():
+    pass
 
 
 class ZaifTokenApi(AbsZaifBaseApi):

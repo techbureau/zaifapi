@@ -5,16 +5,20 @@ from urllib.parse import urljoin
 class ApiUrl:
     _base = '{}://{}{}/{}'
 
-    def __init__(self, api_name, scheme='https', host='api.zaif.jp', port=None, path='', params=None):
+    def __init__(self, api_name, scheme='https', host='api.zaif.jp', version=None, port=None, path='', params=None):
         self._scheme = scheme
         self._host = host
         self._api_name = api_name
         self._port = port
         self._params = QueryParam(params)
         self._path = path
+        self._version = version
 
     def base_url(self):
-        return self._base.format(self._scheme, self._host, self._get_port(), self._api_name)
+        base = self._base.format(self._scheme, self._host, self._get_port(), self._api_name)
+        if self._version:
+            base = urljoin(base, self._version)
+        return base
 
     def full_url(self):
         url = self.base_url()
@@ -54,21 +58,3 @@ class QueryParam:
 
     def __len__(self):
         return len(self._params)
-
-
-class PublicBaseUrl(ApiUrl):
-    def __init__(self, api_name, version, **kwargs):
-        super().__init__(api_name, **kwargs)
-        self._version = version
-
-    def base_url(self):
-        base = super().base_url()
-        return base + '/{}'.format(self._version)
-
-
-class TradeBaseUrl(ApiUrl):
-    pass
-
-
-class StreamBaseUrl(ApiUrl):
-    pass
