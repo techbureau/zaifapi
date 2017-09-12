@@ -6,7 +6,7 @@ from zaifapi.api_common import ApiUrl
 class ZaifTokenApi(ZaifApi):
     def __init__(self, client_id, client_secret):
         super().__init__(
-            url=ApiUrl(api_name=None, version='v1', path=['token'], host='oauth.zaif.jp')
+            url=ApiUrl(api_name=None, version='v1', dirs=['token'], host='oauth.zaif.jp')
         )
         self._client_id = client_id
         self._client_secret = client_secret
