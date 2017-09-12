@@ -31,7 +31,6 @@ class ZaifTradeApiBase(ZaifExchangeApi):
     def _execute_api(self, func_name, schema_keys=None, params=None):
         schema_keys = schema_keys or []
         params = params or {}
-        print(params)
         self.params_pre_processing(schema_keys, params)
         params = self._get_parameter(func_name, params)
         header = self.get_header(params)
