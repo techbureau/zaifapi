@@ -4,8 +4,6 @@ import hmac
 import hashlib
 import inspect
 from websocket import create_connection
-from .url import PublicBaseUrl, TradeBaseUrl, StreamBaseUrl
-from .core import ZaifTradeApiBase, ZaifPublicApiBase, ZaifExchangeApiCore
 
 
 _MAX_COUNT = 1000

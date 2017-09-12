@@ -8,7 +8,25 @@ class ZaifApiValidator(cerberus.Validator):
         if isinstance(value, Decimal):
             return True
 
-SCHEMA = {
+    def validate(self, params):
+        return super().validate(params)
+
+
+class DynamicValidationSchema:
+    def __init__(self):
+        self._schema = DEFAULT_SCHEMA
+
+    def all(self):
+        return self._schema
+
+    def select(self, keys):
+        return dict(filter(lambda item: item[0] in keys, self._schema.items()))
+
+    def update(self, key, value):
+        pass
+
+
+DEFAULT_SCHEMA = {
     'from_num': {
         'type': 'integer'
     },

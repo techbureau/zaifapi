@@ -10,7 +10,7 @@ class ApiUrl:
         self._host = host
         self._api_name = api_name
         self._port = port
-        self._params = QueryParam(params)
+        self._q_params = QueryParam(params)
         self._path = path
         self._version = version
 
@@ -24,10 +24,10 @@ class ApiUrl:
         url = self.base_url()
         url = urljoin(url, self._path)
 
-        if len(self._params) == 0:
+        if len(self._q_params) == 0:
             return url
 
-        url += '?' + self._params.encode()
+        url += '?' + self._q_params.encode()
         return url
 
     def _get_port(self):

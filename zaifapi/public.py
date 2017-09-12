@@ -2,10 +2,12 @@
 import json
 import requests
 from abc import ABCMeta
-from zaifapi.core import ZaifExchangeApiCore
+from zaifapi.core import ZaifExchangeApi
 
 
-class ZaifPublicApiBase(ZaifExchangeApiCore, metaclass=ABCMeta):
+class ZaifPublicApiBase(ZaifExchangeApiCore):
+    __metaclass__ = ABCMeta
+
     def _execute_api(self, func_name, schema_keys=None, params=None, **kwargs):
         schema_keys = schema_keys or []
         params = params or {}
