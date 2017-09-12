@@ -27,6 +27,17 @@ class ZaifApiValidator:
         raise ZaifApiValidationError(json.dumps(v.errors))
 
 
+class FuturesPublicApiValidator(ZaifApiValidator):
+    def __init__(self):
+        super().__init__()
+        self._schema.updates({
+            'currency_pair': {
+                'type': 'string',
+                'nullable': True
+            },
+        })
+
+
 class _UnitValidator(cerberus.Validator):
     @staticmethod
     def _validate_type_decimal(value):
