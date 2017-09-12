@@ -47,9 +47,7 @@ class _ZaifTradeApiBase(ZaifExchangeApi):
 
 class ZaifTradeApi(_ZaifTradeApiBase):
     def __init__(self, key, secret):
-        super().__init__(
-            ApiUrl(api_name='tapi')
-        )
+        super().__init__(ApiUrl(api_name='tapi'))
         self._key = key
         self._secret = secret
 

@@ -13,3 +13,7 @@ class ZaifApiNonceError(ZaifApiError):
 
 class ZaifApiValidationError(ZaifApiError):
     pass
+
+
+class ZaifServerException(ZaifApiError):
+    pass

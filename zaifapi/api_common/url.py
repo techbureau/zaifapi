@@ -5,7 +5,9 @@ from urllib.parse import urlencode
 class ApiUrl:
     _base = '{}://{}{}'
 
-    def __init__(self, api_name, scheme='https', host='api.zaif.jp', version=None, port=None, path=None, params=None):
+    def __init__(self, api_name, scheme='https', host='api.zaif.jp',
+                 version=None, port=None, path=None, params=None):
+
         self._scheme = scheme
         self._host = host
         self._api_name = api_name
