@@ -15,7 +15,7 @@ class _ZaifTradeApiBase(ZaifExchangeApi):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def get_header(self, params):
+    def _get_header(self, params):
         raise NotImplementedError()
 
     @staticmethod
@@ -25,24 +25,38 @@ class _ZaifTradeApiBase(ZaifExchangeApi):
         microseconds = '{0:06d}'.format(now.microsecond)
         return Decimal(nonce + '.' + microseconds)
 
-    def _get_parameter(self, func_name, params):
-        params['method'] = func_name
-        params['nonce'] = self._get_nonce()
-        return urlencode(params)
-
     def _execute_api(self, func_name, schema_keys=None, params=None):
         schema_keys = schema_keys or []
         params = params or {}
-        self.params_pre_processing(schema_keys, params)
-        params = self._get_parameter(func_name, params)
-        header = self.get_header(params)
+
+        params = self._params_pre_processing(schema_keys,
+                                             params,
+                                             func_name)
+        header = self._get_header(params)
         url = self._url.get_absolute_url()
+
         res = get_response(url, params, header)
         if res['success'] == 0:
             if res['error'].startswith('nonce'):
                 raise ZaifApiNonceError(res['error'])
             raise ZaifApiError(res['error'])
         return res['return']
+
+    def _params_pre_processing(self, keys, params, func_name):
+        params = self._validator.params_pre_processing(keys, params)
+        params['method'] = func_name
+        params['nonce'] = self._get_nonce()
+        return urlencode(params)
+
+
+def _make_signature(key, secret, params):
+    signature = hmac.new(bytearray(secret.encode('utf-8')),
+                         digestmod=hashlib.sha512)
+    signature.update(params.encode('utf-8'))
+    return {
+        'key': key,
+        'sign': signature.hexdigest()
+    }
 
 
 class ZaifTradeApi(_ZaifTradeApiBase):
@@ -51,13 +65,8 @@ class ZaifTradeApi(_ZaifTradeApiBase):
         self._key = key
         self._secret = secret
 
-    def get_header(self, params):
-        signature = hmac.new(bytearray(self._secret.encode('utf-8')), digestmod=hashlib.sha512)
-        signature.update(params.encode('utf-8'))
-        return {
-            'key': self._key,
-            'sign': signature.hexdigest()
-        }
+    def _get_header(self, params):
+        return _make_signature(self._key, self._secret, params)
 
     def get_info(self):
         return self._execute_api(method_name())
@@ -72,36 +81,105 @@ class ZaifTradeApi(_ZaifTradeApiBase):
         return self._execute_api(method_name())
 
     def trade_history(self, **kwargs):
-        schema_keys = ['from_num', 'count', 'from_id', 'end_id', 'order', 'since', 'end', 'currency_pair', 'is_token']
-        return self._execute_api(method_name(), schema_keys, kwargs)
+        schema_keys = ['from_num', 'count', 'from_id',
+                       'end_id', 'order', 'since', 'end',
+                       'currency_pair', 'is_token']
+        return self._execute_api(method_name(),
+                                 schema_keys,
+                                 kwargs)
 
     def active_orders(self, **kwargs):
         schema_keys = ['currency_pair', 'is_token', 'is_token_both']
         return self._execute_api(method_name(), schema_keys, kwargs)
 
     def _inner_history_api(self, func_name, kwargs):
-        schema_keys = ['currency', 'from_num', 'count', 'from_id', 'end_id', 'order', 'since', 'end', 'is_token']
-        return self._execute_api(func_name, schema_keys, kwargs)
+        schema_keys = ['currency', 'from_num', 'count', 'from_id',
+                       'end_id', 'order', 'since', 'end', 'is_token']
+        return self._execute_api(func_name,
+                                 schema_keys,
+                                 kwargs)
 
     def withdraw_history(self, **kwargs):
-        return self._inner_history_api(method_name(), kwargs)
+        return self._inner_history_api(method_name(),
+                                       kwargs)
 
     def deposit_history(self, **kwargs):
-        return self._inner_history_api(method_name(), kwargs)
+        return self._inner_history_api(method_name(),
+                                       kwargs)
 
     def withdraw(self, **kwargs):
-        schema_keys = ['currency', 'address', 'message', 'amount', 'opt_fee']
-        return self._execute_api(method_name(), schema_keys, kwargs)
+        schema_keys = ['currency', 'address',
+                       'message', 'amount', 'opt_fee']
+        return self._execute_api(method_name(),
+                                 schema_keys,
+                                 kwargs)
 
     def cancel_order(self, **kwargs):
         schema_keys = ['order_id', 'is_token', 'currency_pair']
-        return self._execute_api(method_name(), schema_keys, kwargs)
+        return self._execute_api(method_name(),
+                                 schema_keys,
+                                 kwargs)
 
     def trade(self, **kwargs):
-        schema_keys = ['currency_pair', 'action', 'price', 'amount', 'limit', 'comment']
-        return self._execute_api(method_name(), schema_keys, kwargs)
+        schema_keys = ['currency_pair', 'action',
+                       'price', 'amount', 'limit', 'comment']
+        return self._execute_api(method_name(),
+                                 schema_keys,
+                                 kwargs)
 
 
+class ZaifLeverageTradeApi(_ZaifTradeApiBase):
+    def __init__(self, key, secret):
+        super().__init__(ApiUrl(api_name='tlapi'))
+        self._key = key
+        self._secret = secret
+
+    def _get_header(self, params):
+        return _make_signature(self._key, self._secret, params)
+
+    def get_positions(self, **kwargs):
+        schema_keys = ['type', 'group_id', 'from_num', 'count',
+                       'from_id', 'end_id', 'order',
+                       'since', 'end', 'currency_pair']
+
+        return self._execute_api(method_name(),
+                                 schema_keys,
+                                 kwargs)
+
+    def position_history(self, **kwargs):
+        schema_keys = ['type', 'group_id', 'leverage_id']
+        return self._execute_api(method_name(),
+                                 schema_keys,
+                                 kwargs)
+
+    def active_positions(self, **kwargs):
+        schema_keys = ['type', 'group_id', 'currency_pair']
+        return self._execute_api(method_name(),
+                                 schema_keys,
+                                 kwargs)
+
+    def create_position(self, **kwargs):
+        schema_keys = ['type', 'group_id', 'currency_pair', 'action',
+                       'price', 'amount', 'leverage', 'limit', 'stop']
+        return self._execute_api(method_name(),
+                                 schema_keys,
+                                 kwargs)
+
+    def change_position(self, **kwargs):
+        schema_keys = ['type', 'group_id', 'leverage_id',
+                       'price', 'limit', 'stop']
+        return self._execute_api(method_name(),
+                                 schema_keys,
+                                 kwargs)
+
+    def cancel_position(self, **kwargs):
+        schema_keys = ['type', 'group_id', 'leverage_id']
+        return self._execute_api(method_name(),
+                                 schema_keys,
+                                 kwargs)
+
+
+# necessary?
 class ZaifTokenTradeApi(ZaifTradeApi):
     def __init__(self, token):
         self._token = token
@@ -111,45 +189,3 @@ class ZaifTokenTradeApi(ZaifTradeApi):
         return {
             'token': self._token
         }
-
-
-class ZaifLeverageTradeApi(_ZaifTradeApiBase):
-    def __init__(self, key, secret):
-        super().__init__(
-            ApiUrl(api_name='tlapi')
-        )
-        self._key = key
-        self._secret = secret
-
-    def get_header(self, params):
-        signature = hmac.new(bytearray(self._secret.encode('utf-8')), digestmod=hashlib.sha512)
-        signature.update(params.encode('utf-8'))
-        return {
-            'key': self._key,
-            'sign': signature.hexdigest()
-        }
-
-    def get_positions(self, **kwargs):
-        schema_keys = ['type', 'group_id', 'from_num', 'count',
-                       'from_id', 'end_id', 'order', 'since', 'end', 'currency_pair']
-        return self._execute_api(method_name(), schema_keys, kwargs)
-
-    def position_history(self, **kwargs):
-        schema_keys = ['type', 'group_id', 'leverage_id']
-        return self._execute_api(method_name(), schema_keys, kwargs)
-
-    def active_positions(self, **kwargs):
-        schema_keys = ['type', 'group_id', 'currency_pair']
-        return self._execute_api(method_name(), schema_keys, kwargs)
-
-    def create_position(self, **kwargs):
-        schema_keys = ['type', 'group_id', 'currency_pair', 'action', 'price', 'amount', 'leverage', 'limit', 'stop']
-        return self._execute_api(method_name(), schema_keys, kwargs)
-
-    def change_position(self, **kwargs):
-        schema_keys = ['type', 'group_id', 'leverage_id', 'price', 'limit', 'stop']
-        return self._execute_api(method_name(), schema_keys, kwargs)
-
-    def cancel_position(self, **kwargs):
-        schema_keys = ['type', 'group_id', 'leverage_id']
-        return self._execute_api(method_name(), schema_keys, kwargs)

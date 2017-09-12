@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from abc import ABCMeta
+from abc import ABCMeta, abstractmethod
 from zaifapi.api_common import ZaifApiValidator, ZaifApi
 
 
@@ -10,8 +10,9 @@ class ZaifExchangeApi(ZaifApi):
         super().__init__(url)
         self._validator = validator or ZaifApiValidator()
 
-    def params_pre_processing(self, keys, params):
-        return self._validator.params_pre_processing(keys, params)
+    @abstractmethod
+    def _params_pre_processing(self, *args, **kwargs):
+        raise NotImplementedError
 
 
 from .public import ZaifPublicApi, ZaifFuturesPublicApi, ZaifPublicStreamApi

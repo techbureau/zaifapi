@@ -1,5 +1,8 @@
 import inspect
 from abc import ABCMeta
+from .response import get_response
+from .url import ApiUrl
+from .validator import ZaifApiValidator, FuturesPublicApiValidator
 
 
 def method_name():
@@ -11,7 +14,3 @@ class ZaifApi:
 
     def __init__(self, url):
         self._url = url
-
-from .response import get_response
-from .url import ApiUrl
-from .validator import ZaifApiValidator, FuturesPublicApiValidator

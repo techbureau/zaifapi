@@ -13,7 +13,7 @@ class ApiUrl:
         self._host = host
         self._api_name = api_name
         self._port = port
-        self._q_params = _QueryParam(params)
+        self._q_params = QueryParam(params)
         self._dirs = dirs or []
         self._version = version
 
@@ -52,7 +52,7 @@ class ApiUrl:
             self._q_params.add_param(key, value)
 
 
-class _QueryParam:
+class QueryParam:
     def __init__(self, params=None):
         self._params = params or {}
 
@@ -76,3 +76,6 @@ class _QueryParam:
 
     def __len__(self):
         return len(self._params)
+
+    def __dict__(self):
+        return self._params
