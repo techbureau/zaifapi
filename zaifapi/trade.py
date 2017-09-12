@@ -6,10 +6,10 @@ from abc import ABCMeta, abstractmethod
 from urllib.parse import urlencode
 from zaifapi.api_common import get_response
 from zaifapi.api_error import ZaifApiError, ZaifApiNonceError
-from zaifapi.core import ZaifExchangeApiCore
+from zaifapi.core import ZaifExchangeApi
 
 
-class ZaifTradeApiBase(ZaifExchangeApiCore):
+class ZaifTradeApiBase(ZaifExchangeApi):
     __metaclass__ = ABCMeta
 
     @abstractmethod
@@ -34,13 +34,10 @@ class ZaifTradeApiBase(ZaifExchangeApiCore):
         params = self.params_pre_processing(schema_keys, params)
         params = self._get_parameter(func_name, params)
         header = self.get_header(params)
-        url = self._url.create_url()
+        url = self._url.full_url()
         res = get_response(url, params, header)
         if res['success'] == 0:
             if res['error'].startswith('nonce'):
                 raise ZaifApiNonceError(res['error'])
             raise ZaifApiError(res['error'])
         return res['return']
-
-    def _override_schema(self, default_scheme):
-        return default_scheme
