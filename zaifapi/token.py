@@ -1,28 +1,14 @@
 # -*- coding: utf-8 -*-
 from zaifapi.api_common import get_response
 from .core import ZaifApi
+from zaifapi.url import ApiUrl
 
 
-# todo: 消す
-class AbsZaifBaseApi(object):
-    __metaclass__ = ABCMeta
-    _use_https = True
-
-    def get_protocol(self):
-        if self._use_https:
-            return 'https'
-        return 'http'
-
-
-class ZaifTokenApi():
-    pass
-
-
-class ZaifTokenApi(AbsZaifBaseApi):
-    _API_URL = '{}://{}/v1/token'
-    _api_domain = 'oauth.zaif.jp'
-
+class ZaifTokenApi(ZaifApi):
     def __init__(self, client_id, client_secret):
+        super().__init__(
+            url=ApiUrl(api_name=None, version='v1', path=['token'], host='oauth.zaif.jp')
+        )
         self._client_id = client_id
         self._client_secret = client_secret
 
@@ -35,7 +21,7 @@ class ZaifTokenApi(AbsZaifBaseApi):
         }
         if redirect_uri:
             params['redirect_uri'] = redirect_uri
-        return get_response(self._API_URL.format(self.get_protocol(), self._api_domain), params)
+        return get_response(self._url.full_url(), params)
 
     def refresh_token(self, refresh_token):
         params = {
@@ -44,4 +30,4 @@ class ZaifTokenApi(AbsZaifBaseApi):
             'client_secret': self._client_secret,
             'grant_type': 'refresh_token'
         }
-        return get_response(self._API_URL, params)
+        return get_response(self._url.full_url(), params)
