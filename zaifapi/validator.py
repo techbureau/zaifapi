@@ -1,8 +1,33 @@
 import cerberus
+import json
 from decimal import Decimal
+from zaifapi.api_error import ZaifApiValidationError
 
 
-class ZaifApiValidator(cerberus.Validator):
+class ZaifApiValidator:
+    def __init__(self):
+        self._schema = _ZaifValidationSchema()
+
+    def params_pre_processing(self, keys, params):
+        self._validate(keys, params)
+        return self._edit_params(params)
+
+    @classmethod
+    def _edit_params(cls, params):
+        if 'from_num' in params:
+            params['from'] = params['from_num']
+            del (params['from_num'])
+        return params
+
+    def _validate(self, keys, params):
+        required_schema = self._schema.select(keys)
+        v = _UnitValidator(required_schema)
+        if v.validate(params):
+            return
+        raise ZaifApiValidationError(json.dumps(v.errors))
+
+
+class _UnitValidator(cerberus.Validator):
     @staticmethod
     def _validate_type_decimal(value):
         if isinstance(value, Decimal):
@@ -12,7 +37,7 @@ class ZaifApiValidator(cerberus.Validator):
         return super().validate(params)
 
 
-class DynamicValidationSchema:
+class _ZaifValidationSchema:
     def __init__(self):
         self._schema = DEFAULT_SCHEMA
 
