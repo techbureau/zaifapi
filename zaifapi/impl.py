@@ -116,46 +116,46 @@ class ZaifTradeApi(ZaifTradeApiBase):
         }
 
     def get_info(self):
-        return self._execute_api(inspect.currentframe().f_code.co_name)
+        return self._execute_api(_method_name())
 
     def get_info2(self):
-        return self._execute_api(inspect.currentframe().f_code.co_name)
+        return self._execute_api(_method_name())
 
     def get_personal_info(self):
-        return self._execute_api(inspect.currentframe().f_code.co_name)
+        return self._execute_api(_method_name())
 
     def get_id_info(self):
-        return self._execute_api(inspect.currentframe().f_code.co_name)
+        return self._execute_api(_method_name())
 
     def trade_history(self, **kwargs):
         schema_keys = ['from_num', 'count', 'from_id', 'end_id', 'order', 'since', 'end', 'currency_pair', 'is_token']
-        return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
+        return self._execute_api(_method_name(), schema_keys, kwargs)
 
     def active_orders(self, **kwargs):
         schema_keys = ['currency_pair', 'is_token', 'is_token_both']
-        return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
+        return self._execute_api(_method_name(), schema_keys, kwargs)
 
     def _inner_history_api(self, func_name, kwargs):
         schema_keys = ['currency', 'from_num', 'count', 'from_id', 'end_id', 'order', 'since', 'end', 'is_token']
         return self._execute_api(func_name, schema_keys, kwargs)
 
     def withdraw_history(self, **kwargs):
-        return self._inner_history_api(inspect.currentframe().f_code.co_name, kwargs)
+        return self._inner_history_api(_method_name(), kwargs)
 
     def deposit_history(self, **kwargs):
-        return self._inner_history_api(inspect.currentframe().f_code.co_name, kwargs)
+        return self._inner_history_api(_method_name(), kwargs)
 
     def withdraw(self, **kwargs):
         schema_keys = ['currency', 'address', 'message', 'amount', 'opt_fee']
-        return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
+        return self._execute_api(_method_name(), schema_keys, kwargs)
 
     def cancel_order(self, **kwargs):
         schema_keys = ['order_id', 'is_token', 'currency_pair']
-        return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
+        return self._execute_api(_method_name(), schema_keys, kwargs)
 
     def trade(self, **kwargs):
         schema_keys = ['currency_pair', 'action', 'price', 'amount', 'limit', 'comment']
-        return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
+        return self._execute_api(_method_name(), schema_keys, kwargs)
 
 
 class ZaifTokenTradeApi(ZaifTradeApi):
@@ -188,24 +188,24 @@ class ZaifLeverageTradeApi(ZaifTradeApiBase):
     def get_positions(self, **kwargs):
         schema_keys = ['type', 'group_id', 'from_num', 'count',
                        'from_id', 'end_id', 'order', 'since', 'end', 'currency_pair']
-        return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
+        return self._execute_api(_method_name(), schema_keys, kwargs)
 
     def position_history(self, **kwargs):
         schema_keys = ['type', 'group_id', 'leverage_id']
-        return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
+        return self._execute_api(_method_name(), schema_keys, kwargs)
 
-    def active_positions(self, func_name, kwargs):
+    def active_positions(self, **kwargs):
         schema_keys = ['type', 'group_id', 'currency_pair']
-        return self._execute_api(func_name, schema_keys, kwargs)
+        return self._execute_api(_method_name(), schema_keys, kwargs)
 
-    def create_position(self, func_name, kwargs):
+    def create_position(self, **kwargs):
         schema_keys = ['type', 'group_id', 'currency_pair', 'action', 'price', 'amount', 'leverage', 'limit', 'stop']
-        return self._execute_api(func_name, schema_keys, kwargs)
+        return self._execute_api(_method_name(), schema_keys, kwargs)
 
-    def change_position(self, func_name, kwargs):
+    def change_position(self, **kwargs):
         schema_keys = ['type', 'group_id', 'leverage_id', 'price', 'limit', 'stop']
-        return self._execute_api(func_name, schema_keys, kwargs)
+        return self._execute_api(_method_name(), schema_keys, kwargs)
 
     def cancel_position(self, **kwargs):
         schema_keys = ['type', 'group_id', 'leverage_id']
-        return self._execute_api(inspect.currentframe().f_code.co_name, schema_keys, kwargs)
+        return self._execute_api(_method_name(), schema_keys, kwargs)
