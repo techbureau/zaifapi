@@ -36,7 +36,7 @@ zaif.create_position(type='margin',
                      leverage=2)
 ```
     
-より詳しい機能については、[wiki](https://github.com/techbureau/zaifapi/wiki)にてご確認ください。
+より詳しい機能については、[**Wiki**](https://github.com/techbureau/zaifapi/wiki)にてご確認ください。
 
 
 関連情報
