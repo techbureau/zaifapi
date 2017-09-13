@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import cerberus
 import json
 from decimal import Decimal

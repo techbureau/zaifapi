@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from zaifapi.api_common import get_response, ZaifApi
 from zaifapi.api_common import ApiUrl
 

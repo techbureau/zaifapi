@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 class ZaifApiError(Exception):
     def __init__(self, message):
         self._message = message

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from abc import ABCMeta, abstractmethod
 from zaifapi.api_common import ZaifApiValidator, ZaifApi
 
