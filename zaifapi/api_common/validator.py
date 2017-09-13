@@ -9,8 +9,8 @@ class ZaifApiValidator:
     def __init__(self):
         self._schema = _ZaifValidationSchema()
 
-    def params_pre_processing(self, keys, params):
-        self._validate(keys, params)
+    def params_pre_processing(self, schema_keys, params):
+        self._validate(schema_keys, params)
         return self._edit_params(params)
 
     @classmethod
@@ -20,8 +20,8 @@ class ZaifApiValidator:
             del (params['from_num'])
         return params
 
-    def _validate(self, keys, params):
-        required_schema = self._schema.select(keys)
+    def _validate(self, schema_keys, params):
+        required_schema = self._schema.select(schema_keys)
         v = _UnitValidator(required_schema)
         if v.validate(params):
             return
