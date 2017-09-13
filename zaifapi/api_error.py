@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class ZaifApiError(Exception):
     def __init__(self, message):
         self._message = message
@@ -6,9 +7,13 @@ class ZaifApiError(Exception):
         return self._message
 
 
-class ZaifApiNonceError(Exception):
-    def __init__(self, message):
-        self._message = message
+class ZaifApiNonceError(ZaifApiError):
+    pass
 
-    def __str__(self):
-        return self._message
+
+class ZaifApiValidationError(ZaifApiError):
+    pass
+
+
+class ZaifServerException(ZaifApiError):
+    pass

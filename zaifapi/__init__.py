@@ -1,6 +1,15 @@
-from .impl import ZaifTradeApi, ZaifPublicApi, ZaifTokenTradeApi, ZaifPublicStreamApi
-from .token import ZaifTokenApi
-from .api_error import ZaifApiError, ZaifApiNonceError
+from .exchange_api import *
+from .oauth import ZaifTokenApi
 
-__all__ = ['ZaifTradeApi', 'ZaifPublicApi', 'ZaifTokenTradeApi', 'ZaifTokenApi', 'ZaifPublicStreamApi',
-           'ZaifApiError', 'ZaifApiNonceError']
+_MAX_COUNT = 1000
+_MIN_WAIT_TIME_SEC = 1
+
+__all__ = [
+    'ZaifTradeApi',
+    'ZaifPublicApi',
+    'ZaifTokenTradeApi',
+    'ZaifTokenApi',
+    'ZaifPublicStreamApi',
+    'ZaifLeverageTradeApi',
+    'ZaifFuturesPublicApi'
+]
