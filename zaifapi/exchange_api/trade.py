@@ -11,9 +11,7 @@ from zaifapi.api_error import ZaifApiError, ZaifApiNonceError
 from . import ZaifExchangeApi
 
 
-class _ZaifTradeApiBase(ZaifExchangeApi):
-    __metaclass__ = ABCMeta
-
+class _ZaifTradeApiBase(ZaifExchangeApi, metaclass=ABCMeta):
     @abstractmethod
     def _get_header(self, params):
         raise NotImplementedError()

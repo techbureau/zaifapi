@@ -3,8 +3,7 @@ from abc import ABCMeta, abstractmethod
 from zaifapi.api_common import ZaifApiValidator, ZaifApi
 
 
-class ZaifExchangeApi(ZaifApi):
-    __metaclass__ = ABCMeta
+class ZaifExchangeApi(ZaifApi, metaclass=ABCMeta):
 
     def __init__(self, url, validator=None):
         super().__init__(url)

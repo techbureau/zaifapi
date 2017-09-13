@@ -9,9 +9,7 @@ from zaifapi.api_common import method_name, ApiUrl, FuturesPublicApiValidator
 from . import ZaifExchangeApi
 
 
-class _ZaifPublicApiBase(ZaifExchangeApi):
-    __metaclass__ = ABCMeta
-
+class _ZaifPublicApiBase(ZaifExchangeApi, metaclass=ABCMeta):
     def _execute_api(self, func_name, schema_keys=None, q_params=None, **kwargs):
         schema_keys = schema_keys or []
         q_params = q_params or {}

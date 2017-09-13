@@ -9,8 +9,7 @@ def method_name():
     return inspect.stack()[1][3]
 
 
-class ZaifApi:
-    __metaclass__ = ABCMeta
+class ZaifApi(metaclass=ABCMeta):
 
     def __init__(self, url):
         self._url = url
