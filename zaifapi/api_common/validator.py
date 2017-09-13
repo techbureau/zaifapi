@@ -141,12 +141,15 @@ DEFAULT_SCHEMA = {
     },
     'type': {
         'type': 'string',
+        'required': True,
         'allowed': ['margin', 'futures']
     },
     'leverage': {
+        'required': True,
         'type': ['number', 'decimal']
     },
     'leverage_id': {
         'type': 'integer',
+        'required': True,
     }
 }
