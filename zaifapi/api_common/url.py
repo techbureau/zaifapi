@@ -45,6 +45,8 @@ class ApiUrl:
 
     def add_dirs(self, dir_, *dirs):
         for dir_ in itertools.chain((dir_, ), dirs):
+            if dir_ is None:
+                return
             self._dirs.append(str(dir_))
 
     def add_q_params(self, dict_):
