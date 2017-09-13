@@ -29,9 +29,7 @@ class _ZaifTradeApiBase(ZaifExchangeApi):
         schema_keys = schema_keys or []
         params = params or {}
 
-        params = self._params_pre_processing(schema_keys,
-                                             params,
-                                             func_name)
+        params = self._params_pre_processing(schema_keys, params, func_name)
         header = self._get_header(params)
         url = self._url.get_absolute_url()
 
@@ -84,9 +82,7 @@ class ZaifTradeApi(_ZaifTradeApiBase):
         schema_keys = ['from_num', 'count', 'from_id',
                        'end_id', 'order', 'since', 'end',
                        'currency_pair', 'is_token']
-        return self._execute_api(method_name(),
-                                 schema_keys,
-                                 kwargs)
+        return self._execute_api(method_name(), schema_keys, kwargs)
 
     def active_orders(self, **kwargs):
         schema_keys = ['currency_pair', 'is_token', 'is_token_both']
@@ -95,37 +91,27 @@ class ZaifTradeApi(_ZaifTradeApiBase):
     def _inner_history_api(self, func_name, kwargs):
         schema_keys = ['currency', 'from_num', 'count', 'from_id',
                        'end_id', 'order', 'since', 'end', 'is_token']
-        return self._execute_api(func_name,
-                                 schema_keys,
-                                 kwargs)
+        return self._execute_api(func_name, schema_keys, kwargs)
 
     def withdraw_history(self, **kwargs):
-        return self._inner_history_api(method_name(),
-                                       kwargs)
+        return self._inner_history_api(method_name(), kwargs)
 
     def deposit_history(self, **kwargs):
-        return self._inner_history_api(method_name(),
-                                       kwargs)
+        return self._inner_history_api(method_name(), kwargs)
 
     def withdraw(self, **kwargs):
         schema_keys = ['currency', 'address',
                        'message', 'amount', 'opt_fee']
-        return self._execute_api(method_name(),
-                                 schema_keys,
-                                 kwargs)
+        return self._execute_api(method_name(), schema_keys, kwargs)
 
     def cancel_order(self, **kwargs):
         schema_keys = ['order_id', 'is_token', 'currency_pair']
-        return self._execute_api(method_name(),
-                                 schema_keys,
-                                 kwargs)
+        return self._execute_api(method_name(), schema_keys, kwargs)
 
     def trade(self, **kwargs):
         schema_keys = ['currency_pair', 'action',
                        'price', 'amount', 'limit', 'comment']
-        return self._execute_api(method_name(),
-                                 schema_keys,
-                                 kwargs)
+        return self._execute_api(method_name(), schema_keys, kwargs)
 
 
 class ZaifLeverageTradeApi(_ZaifTradeApiBase):
@@ -142,44 +128,31 @@ class ZaifLeverageTradeApi(_ZaifTradeApiBase):
                        'from_id', 'end_id', 'order',
                        'since', 'end', 'currency_pair']
 
-        return self._execute_api(method_name(),
-                                 schema_keys,
-                                 kwargs)
+        return self._execute_api(method_name(), schema_keys, kwargs)
 
     def position_history(self, **kwargs):
         schema_keys = ['type', 'group_id', 'leverage_id']
-        return self._execute_api(method_name(),
-                                 schema_keys,
-                                 kwargs)
+        return self._execute_api(method_name(), schema_keys, kwargs)
 
     def active_positions(self, **kwargs):
         schema_keys = ['type', 'group_id', 'currency_pair']
-        return self._execute_api(method_name(),
-                                 schema_keys,
-                                 kwargs)
+        return self._execute_api(method_name(), schema_keys, kwargs)
 
     def create_position(self, **kwargs):
         schema_keys = ['type', 'group_id', 'currency_pair', 'action',
                        'price', 'amount', 'leverage', 'limit', 'stop']
-        return self._execute_api(method_name(),
-                                 schema_keys,
-                                 kwargs)
+        return self._execute_api(method_name(), schema_keys, kwargs)
 
     def change_position(self, **kwargs):
         schema_keys = ['type', 'group_id', 'leverage_id',
                        'price', 'limit', 'stop']
-        return self._execute_api(method_name(),
-                                 schema_keys,
-                                 kwargs)
+        return self._execute_api(method_name(), schema_keys, kwargs)
 
     def cancel_position(self, **kwargs):
         schema_keys = ['type', 'group_id', 'leverage_id']
-        return self._execute_api(method_name(),
-                                 schema_keys,
-                                 kwargs)
+        return self._execute_api(method_name(), schema_keys, kwargs)
 
 
-# necessary?
 class ZaifTokenTradeApi(ZaifTradeApi):
     def __init__(self, token):
         self._token = token
