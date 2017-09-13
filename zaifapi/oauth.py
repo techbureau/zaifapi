@@ -22,7 +22,7 @@ class ZaifTokenApi(ZaifApi):
         }
         if redirect_uri:
             params['redirect_uri'] = redirect_uri
-        return get_response(self._url.full_url(), params)
+        return get_response(self._url.get_absolute_url(), params)
 
     def refresh_token(self, refresh_token):
         params = {
@@ -31,4 +31,4 @@ class ZaifTokenApi(ZaifApi):
             'client_secret': self._client_secret,
             'grant_type': 'refresh_token'
         }
-        return get_response(self._url.full_url(), params)
+        return get_response(self._url.get_absolute_url(), params)
