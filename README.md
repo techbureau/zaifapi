@@ -1,3 +1,5 @@
+![](https://img.shields.io/apm/l/vim-mode.svg) ![](https://img.shields.io/badge/Python-after%20v3-red.svg)
+
 :snake: zaifapi
 ======================
 zaifが公開しているAPIを簡単に呼べるようにしました。  
