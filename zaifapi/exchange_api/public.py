@@ -16,6 +16,7 @@ class _ZaifPublicApiBase(ZaifExchangeApi, metaclass=ABCMeta):
         params = self._params_pre_processing(schema_keys, kwargs)
         self._url.add_dirs(func_name, *params.values())
         response = requests.get(self._url.get_absolute_url(), params=q_params)
+        self._url.refresh_dirs()
         if response.status_code != 200:
             raise ZaifApiError('return status code is {}'.format(response.status_code))
         return json.loads(response.text)

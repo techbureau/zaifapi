@@ -48,9 +48,15 @@ class ApiUrl:
                 return
             self._dirs.append(str(dir_))
 
+    def refresh_dirs(self):
+        self._dirs = []
+
     def add_q_params(self, dict_):
         for key, value in dict_.items():
             self._q_params.add_param(key, value)
+
+    def refresh_q_params(self):
+        self._q_params.delete_all()
 
 
 class QueryParam:
@@ -74,6 +80,9 @@ class QueryParam:
     def add_params(self, dictionary):
         for k, v in dictionary.items():
             self._params[k] = v
+
+    def delete_all(self):
+        self._params = {}
 
     def __len__(self):
         return len(self._params)
