@@ -150,5 +150,8 @@ DEFAULT_SCHEMA = {
     'leverage_id': {
         'type': 'integer',
         'required': True,
+    },
+    'stop': {
+        'type': ['number', 'decimal']
     }
 }

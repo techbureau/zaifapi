@@ -12,7 +12,6 @@ class _ZaifPublicApiBase(ZaifExchangeApi, metaclass=ABCMeta):
     def _execute_api(self, func_name, schema_keys=None, q_params=None, **kwargs):
         schema_keys = schema_keys or []
         q_params = q_params or {}
-
         params = self._params_pre_processing(schema_keys, kwargs)
         self._url.add_dirs(func_name, *params.values())
         response = requests.get(self._url.get_absolute_url(), params=q_params)
@@ -72,6 +71,18 @@ class ZaifFuturesPublicApi(_ZaifPublicApiBase):
             ApiUrl(api_name='fapi', version=1),
             FuturesPublicApiValidator()
         )
+
+    # Want to delete this method
+    def _execute_api(self, func_name, schema_keys=None, q_params=None, **kwargs):
+        schema_keys = schema_keys or []
+        q_params = q_params or {}
+        params = self._params_pre_processing(schema_keys, kwargs)
+        self._url.add_dirs(func_name, params.get('group_id'), params.get('currency_pair'))
+        response = requests.get(self._url.get_absolute_url(), params=q_params)
+        self._url.refresh_dirs()
+        if response.status_code != 200:
+            raise ZaifApiError('return status code is {}'.format(response.status_code))
+        return json.loads(response.text)
 
     def last_price(self, group_id, currency_pair=None):
         schema_keys = ['currency_pair', 'group_id']
