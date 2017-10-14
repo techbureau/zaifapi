@@ -17,7 +17,7 @@ zaifが公開しているAPIを簡単に呼べるようにしました。
 from zaifapi import *
 
 zaif = ZaifPublicApi()
-zalf.last_price('btc_jpy')
+zaif.last_price('btc_jpy')
 
 zaif = ZaifTradeApi(key, secret)
 zaif.trade(currency_pair='btc_jpy',
