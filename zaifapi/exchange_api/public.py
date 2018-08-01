@@ -77,7 +77,11 @@ class ZaifFuturesPublicApi(_ZaifPublicApiBase):
         schema_keys = schema_keys or []
         q_params = q_params or {}
         params = self._params_pre_processing(schema_keys, kwargs)
-        self._url.add_dirs(func_name, *params.values())
+        if params.get('page', None):
+            self._url.add_dirs(func_name, params.get('group_id'), params.get('currency_pair'),
+                               params.get('page'))
+        else:
+            self._url.add_dirs(func_name, params.get('group_id'), params.get('currency_pair'))
         response = requests.get(self._url.get_absolute_url(), params=q_params)
         self._url.refresh_dirs()
         if response.status_code != 200:
