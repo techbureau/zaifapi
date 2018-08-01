@@ -138,6 +138,9 @@ DEFAULT_SCHEMA = {
     'group_id': {
         'type': ['string', 'integer']
     },
+    'page': {
+        'type': 'integer',
+    },
     'type': {
         'type': 'string',
         'required': True,

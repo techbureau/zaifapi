@@ -77,7 +77,7 @@ class ZaifFuturesPublicApi(_ZaifPublicApiBase):
         schema_keys = schema_keys or []
         q_params = q_params or {}
         params = self._params_pre_processing(schema_keys, kwargs)
-        self._url.add_dirs(func_name, params.get('group_id'), params.get('currency_pair'))
+        self._url.add_dirs(func_name, *params.values())
         response = requests.get(self._url.get_absolute_url(), params=q_params)
         self._url.refresh_dirs()
         if response.status_code != 200:
@@ -117,6 +117,20 @@ class ZaifFuturesPublicApi(_ZaifPublicApiBase):
         return self._execute_api(method_name(),
                                  schema_keys,
                                  group_id=group_id)
+
+    def swap_history(self, group_id, currency_pair, page=None):
+        if not page:
+            schema_keys = ['currency_pair', 'group_id']
+            return self._execute_api(method_name(),
+                                     schema_keys,
+                                     group_id=group_id,
+                                     currency_pair=currency_pair)
+        schema_keys = ['currency_pair', 'group_id', 'page']
+        return self._execute_api(method_name(),
+                                 schema_keys,
+                                 group_id=group_id,
+                                 currency_pair=currency_pair,
+                                 page=page)
 
 
 class ZaifPublicStreamApi(_ZaifPublicApiBase):
