@@ -8,7 +8,7 @@ python:
 sudo: false
 
 install:
-  - pip setup.py build --build-base=".build-$TRAVIS_PYTHON_VERSION" install
+  - python setup.py build --build-base=".build-$TRAVIS_PYTHON_VERSION" install
 
 script:
   - python setup.py test
