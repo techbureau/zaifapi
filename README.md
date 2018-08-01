@@ -1,6 +1,6 @@
 ![](https://img.shields.io/apm/l/vim-mode.svg) ![](https://img.shields.io/badge/Python-after%20v3-red.svg)
 
-:snake: zaifapi
+:snake: zaifapi [![](https://travis-ci.org/techbureau/zaifapi.svg?branch=master)](https://travis-ci.org/techbureau/zaifapi)
 ======================
 zaifが公開しているAPIを簡単に呼べるようにしました。  
 本モジュールはテックビューロ非公式です。ご利用は自己責任でご自由にどうぞ。
