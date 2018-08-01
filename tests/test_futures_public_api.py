@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from zaifapi import ZaifFuturesPublicApi
+from zaifapi.api_error import ZaifApiValidationError
 
 
 class TestPublicApi(unittest.TestCase):
@@ -58,6 +59,30 @@ class TestPublicApi(unittest.TestCase):
             self.api.groups(group_id=3)
             mock_get.assert_called_once_with('https://api.zaif.jp/test_futures/1/groups/3',
                                              params={})
+
+    def test_swap_history(self):
+        with patch('requests.get') as mock_get:
+            currency_pair = 'test_jpy'
+            mock_get.return_value = self.response
+            self.api.swap_history(currency_pair=currency_pair, group_id=3, page=5)
+            mock_get.assert_called_once_with('https://api.zaif.jp/test_futures/1/swap_history/3/test_jpy/5',
+                                             params={})
+
+    def test_swap_history_missing_page_arg(self):
+        with patch('requests.get') as mock_get:
+            currency_pair = 'test_jpy'
+            mock_get.return_value = self.response
+            self.api.swap_history(currency_pair=currency_pair, group_id=3)
+            mock_get.assert_called_once_with('https://api.zaif.jp/test_futures/1/swap_history/3/test_jpy',
+                                             params={})
+
+    def test_swap_history_with_invalid_page_arg(self):
+        with patch('requests.get') as mock_get:
+            currency_pair = 'test_jpy'
+            mock_get.return_value = self.response
+            # page argument is invalid type
+            with self.assertRaises(ZaifApiValidationError):
+                self.api.swap_history(currency_pair=currency_pair, group_id=3, page="5")
 
 
 if __name__ == '__main__':
