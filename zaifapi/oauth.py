@@ -1,14 +1,11 @@
 from zaifapi.api_common import get_response, ZaifApi
-from zaifapi.api_common import ApiUrl
+from zaifapi.api_common import get_api_url
 
 
 class ZaifTokenApi(ZaifApi):
-    def __init__(self, client_id, client_secret):
-        super().__init__(ApiUrl(api_name=None,
-                                version='v1',
-                                dirs=['token'],
-                                host='oauth.zaif.jp'))
-
+    def __init__(self, client_id, client_secret, api_url=None):
+        api_url = get_api_url(api_url, None, host='oauth.zaif.jp', version='v1', dirs=['token'])
+        super().__init__(api_url)
         self._client_id = client_id
         self._client_secret = client_secret
 
