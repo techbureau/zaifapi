@@ -17,5 +17,5 @@ setup(
       'Intended Audience :: Developers',
       'License :: OSI Approved :: MIT License'
     ],
-    install_requires=['requests==2.19.1', 'websocket-client==0.48.0', 'Cerberus==1.2']
+    install_requires=['requests', 'websocket-client', 'Cerberus']
 )
