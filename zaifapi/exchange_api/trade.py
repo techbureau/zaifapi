@@ -5,7 +5,7 @@ from decimal import Decimal
 from datetime import datetime
 from abc import ABCMeta, abstractmethod
 from urllib.parse import urlencode
-from zaifapi.api_common import get_response, ApiUrl, method_name
+from zaifapi.api_common import get_response, get_api_url, method_name
 from zaifapi.api_error import ZaifApiError, ZaifApiNonceError
 from . import ZaifExchangeApi
 
@@ -55,8 +55,8 @@ def _make_signature(key, secret, params):
 
 
 class ZaifTradeApi(_ZaifTradeApiBase):
-    def __init__(self, key, secret):
-        super().__init__(ApiUrl(api_name='tapi'))
+    def __init__(self, key, secret, api_url=None):
+        super().__init__(get_api_url(api_url, 'tapi'))
         self._key = key
         self._secret = secret
 
@@ -112,8 +112,9 @@ class ZaifTradeApi(_ZaifTradeApiBase):
 
 
 class ZaifLeverageTradeApi(_ZaifTradeApiBase):
-    def __init__(self, key, secret):
-        super().__init__(ApiUrl(api_name='tlapi'))
+    def __init__(self, key, secret, api_url=None):
+        api_url = get_api_url(api_url, 'tlapi')
+        super().__init__(api_url)
         self._key = key
         self._secret = secret
 
@@ -151,9 +152,9 @@ class ZaifLeverageTradeApi(_ZaifTradeApiBase):
 
 
 class ZaifTokenTradeApi(ZaifTradeApi):
-    def __init__(self, token):
+    def __init__(self, token, api_url=None):
         self._token = token
-        super().__init__(None, None)
+        super().__init__(None, None, api_url)
 
     def get_header(self, params):
         return {

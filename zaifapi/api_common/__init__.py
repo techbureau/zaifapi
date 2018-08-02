@@ -1,7 +1,7 @@
 import inspect
 from abc import ABCMeta
 from .response import get_response
-from .url import ApiUrl
+from .url import ApiUrl, get_api_url
 from .validator import ZaifApiValidator, FuturesPublicApiValidator
 
 

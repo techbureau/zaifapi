@@ -4,7 +4,7 @@ from abc import ABCMeta
 
 from zaifapi.api_error import ZaifApiError
 from websocket import create_connection
-from zaifapi.api_common import method_name, ApiUrl, FuturesPublicApiValidator
+from zaifapi.api_common import method_name, get_api_url, FuturesPublicApiValidator
 from . import ZaifExchangeApi
 
 
@@ -25,8 +25,8 @@ class _ZaifPublicApiBase(ZaifExchangeApi, metaclass=ABCMeta):
 
 
 class ZaifPublicApi(_ZaifPublicApiBase):
-    def __init__(self):
-        super().__init__(ApiUrl(api_name='api', version=1))
+    def __init__(self, api_url=None):
+        super().__init__(get_api_url(api_url, 'api', version=1))
 
     def last_price(self, currency_pair):
         schema_keys = ['currency_pair']
@@ -66,9 +66,10 @@ class ZaifPublicApi(_ZaifPublicApiBase):
 
 
 class ZaifFuturesPublicApi(_ZaifPublicApiBase):
-    def __init__(self):
+    def __init__(self, api_url=None):
+        api_url = get_api_url(api_url, 'fapi', version=1)
         super().__init__(
-            ApiUrl(api_name='fapi', version=1),
+            api_url,
             FuturesPublicApiValidator()
         )
 
@@ -138,11 +139,9 @@ class ZaifFuturesPublicApi(_ZaifPublicApiBase):
 
 
 class ZaifPublicStreamApi(_ZaifPublicApiBase):
-    def __init__(self):
-        super().__init__(ApiUrl(api_name='stream',
-                                protocol='wss',
-                                host='ws.zaif.jp',
-                                port=8888))
+    def __init__(self, api_url=None):
+        api_url = get_api_url(api_url, 'stream', protocol='wss', host='ws.zaif.jp', port=8888)
+        super().__init__(api_url)
         self._continue = True
 
     def stop(self):

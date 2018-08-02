@@ -89,3 +89,9 @@ class QueryParam:
 
     def __dict__(self):
         return self._params
+
+
+def get_api_url(arg_api_url, api_name, protocol='https', host='api.zaif.jp', version=None, dirs=None, port=None):
+    if arg_api_url is not None:
+        return arg_api_url
+    return ApiUrl(api_name, protocol=protocol, host=host, version=version, dirs=dirs, port=port)

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='zaifapi',
-    version='1.6.2',
+    version='1.6.3',
     description='Zaif Api Library',
     long_description='https://pypi.python.org/pypi/zaifapi',
     url='https://github.com/techbureau/zaifapi',
@@ -17,5 +17,5 @@ setup(
       'Intended Audience :: Developers',
       'License :: OSI Approved :: MIT License'
     ],
-    install_requires=['requests', 'websocket-client', 'Cerberus']
+    install_requires=['requests==2.19.1', 'websocket-client==0.48.0', 'Cerberus==1.2']
 )
