@@ -10,6 +10,5 @@ def method_name():
 
 
 class ZaifApi(metaclass=ABCMeta):
-
     def __init__(self, url):
         self._url = url

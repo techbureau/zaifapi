@@ -14,9 +14,9 @@ class ZaifApiValidator:
 
     @classmethod
     def _edit_params(cls, params):
-        if 'from_num' in params:
-            params['from'] = params['from_num']
-            del (params['from_num'])
+        if "from_num" in params:
+            params["from"] = params["from_num"]
+            del params["from_num"]
         return params
 
     def _validate(self, schema_keys, params):
@@ -30,12 +30,7 @@ class ZaifApiValidator:
 class FuturesPublicApiValidator(ZaifApiValidator):
     def __init__(self):
         super().__init__()
-        self._schema.updates({
-            'currency_pair': {
-                'type': 'string',
-                'nullable': True
-            },
-        })
+        self._schema.updates({"currency_pair": {"type": "string", "nullable": True}})
 
 
 class _UnitValidator(cerberus.Validator):
@@ -67,94 +62,30 @@ class _ZaifValidationSchema:
 
 
 DEFAULT_SCHEMA = {
-    'from_num': {
-        'type': 'integer'
-    },
-    'count': {
-        'type': 'integer'
-    },
-    'from_id': {
-        'type': 'integer'
-    },
-    'end_id': {
-        'type': ['string', 'integer']
-    },
-    'order': {
-        'type': 'string',
-        'allowed': ['ASC', 'DESC']
-    },
-    'since': {
-        'type': 'integer'
-    },
-    'end': {
-        'type': ['string', 'integer']
-    },
-    'currency_pair': {
-        'type': 'string'
-    },
-    'currency': {
-        'required': True,
-        'type': 'string'
-    },
-    'address': {
-        'required': True,
-        'type': 'string'
-    },
-    'message': {
-        'type': 'string'
-    },
-    'amount': {
-        'required': True,
-        'type': ['number', 'decimal']
-    },
-    'opt_fee': {
-        'type': 'number'
-    },
-    'order_id': {
-        'required': True,
-        'type': 'integer'
-    },
-    'action': {
-        'required': True,
-        'type': 'string',
-        'allowed': ['bid', 'ask']
-    },
-    'price': {
-        'required': True,
-        'type': ['number', 'decimal']
-    },
-    'limit': {
-        'type': ['number', 'decimal']
-    },
-    'is_token': {
-        'type': 'boolean'
-    },
-    'is_token_both': {
-        'type': 'boolean'
-    },
-    'comment': {
-        'type': 'string'
-    },
-    'group_id': {
-        'type': ['string', 'integer']
-    },
-    'page': {
-        'type': 'integer',
-    },
-    'type': {
-        'type': 'string',
-        'required': True,
-        'allowed': ['margin', 'futures']
-    },
-    'leverage': {
-        'required': True,
-        'type': ['number', 'decimal']
-    },
-    'leverage_id': {
-        'type': 'integer',
-        'required': True,
-    },
-    'stop': {
-        'type': ['number', 'decimal']
-    }
+    "from_num": {"type": "integer"},
+    "count": {"type": "integer"},
+    "from_id": {"type": "integer"},
+    "end_id": {"type": ["string", "integer"]},
+    "order": {"type": "string", "allowed": ["ASC", "DESC"]},
+    "since": {"type": "integer"},
+    "end": {"type": ["string", "integer"]},
+    "currency_pair": {"type": "string"},
+    "currency": {"required": True, "type": "string"},
+    "address": {"required": True, "type": "string"},
+    "message": {"type": "string"},
+    "amount": {"required": True, "type": ["number", "decimal"]},
+    "opt_fee": {"type": "number"},
+    "order_id": {"required": True, "type": "integer"},
+    "action": {"required": True, "type": "string", "allowed": ["bid", "ask"]},
+    "price": {"required": True, "type": ["number", "decimal"]},
+    "limit": {"type": ["number", "decimal"]},
+    "is_token": {"type": "boolean"},
+    "is_token_both": {"type": "boolean"},
+    "comment": {"type": "string"},
+    "group_id": {"type": ["string", "integer"]},
+    "page": {"type": "integer"},
+    "type": {"type": "string", "required": True, "allowed": ["margin", "futures"]},
+    "leverage": {"required": True, "type": ["number", "decimal"]},
+    "leverage_id": {"type": "integer", "required": True},
+    "stop": {"type": ["number", "decimal"]},
 }

@@ -3,10 +3,18 @@ from urllib.parse import urlencode
 
 
 class ApiUrl:
-    _skeleton_url = '{}://{}{}'
+    _skeleton_url = "{}://{}{}"
 
-    def __init__(self, api_name, protocol='https', host='api.zaif.jp',
-                 version=None, port=None, dirs=None, params=None):
+    def __init__(
+        self,
+        api_name,
+        protocol="https",
+        host="api.zaif.jp",
+        version=None,
+        port=None,
+        dirs=None,
+        params=None,
+    ):
 
         self._protocol = protocol
         self._host = host
@@ -19,10 +27,10 @@ class ApiUrl:
     def get_base_url(self):
         base = self._skeleton_url.format(self._protocol, self._host, self._get_port())
         if self._api_name:
-            base += '/' + str(self._api_name)
+            base += "/" + str(self._api_name)
 
         if self._version:
-            base += '/' + str(self._version)
+            base += "/" + str(self._version)
         return base
 
     def get_absolute_url(self, *, with_params=False):
@@ -32,18 +40,18 @@ class ApiUrl:
         return absolute_url
 
     def get_pathname(self):
-        path_name = ''
+        path_name = ""
         for dir_ in self._dirs:
-            path_name += '/' + str(dir_)
+            path_name += "/" + str(dir_)
         return path_name
 
     def _get_port(self):
         if self._port:
-            return ':{}'.format(self._port)
-        return ''
+            return ":{}".format(self._port)
+        return ""
 
     def add_dirs(self, dir_, *dirs):
-        for dir_ in itertools.chain((dir_, ), dirs):
+        for dir_ in itertools.chain((dir_,), dirs):
             if dir_ is None:
                 return
             self._dirs.append(str(dir_))
@@ -68,8 +76,8 @@ class QueryParam:
 
     def get_str_params(self):
         if len(self._params) == 0:
-            return ''
-        return '?' + self._encode()
+            return ""
+        return "?" + self._encode()
 
     def __str__(self):
         return self._encode()
@@ -91,7 +99,9 @@ class QueryParam:
         return self._params
 
 
-def get_api_url(arg_api_url, api_name, protocol='https', host='api.zaif.jp', version=None, dirs=None, port=None):
+def get_api_url(
+    arg_api_url, api_name, protocol="https", host="api.zaif.jp", version=None, dirs=None, port=None
+):
     if arg_api_url is not None:
         return arg_api_url
     return ApiUrl(api_name, protocol=protocol, host=host, version=version, dirs=dirs, port=port)
