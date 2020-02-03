@@ -1,10 +1,11 @@
 import json
 import requests
 from abc import ABCMeta
+from typing import Optional
 
 from zaifapi.api_error import ZaifApiError
 from websocket import create_connection
-from zaifapi.api_common import method_name, get_api_url, FuturesPublicApiValidator
+from zaifapi.api_common import ApiUrl, method_name, get_api_url, FuturesPublicApiValidator
 from . import ZaifExchangeApi
 
 
@@ -25,8 +26,8 @@ class _ZaifPublicApiBase(ZaifExchangeApi, metaclass=ABCMeta):
 
 
 class ZaifPublicApi(_ZaifPublicApiBase):
-    def __init__(self, api_url=None):
-        super().__init__(get_api_url(api_url, "api", version=1))
+    def __init__(self, api_url: Optional[ApiUrl] = None):
+        super().__init__(get_api_url(api_url, "api", version="1"))
 
     def last_price(self, currency_pair):
         schema_keys = ["currency_pair"]

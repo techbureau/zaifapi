@@ -1,6 +1,7 @@
-import cerberus
 import json
 from decimal import Decimal
+from typing import Any, Dict
+import cerberus
 from zaifapi.api_error import ZaifApiValidationError
 
 
@@ -47,21 +48,21 @@ class _ZaifValidationSchema:
     def __init__(self):
         self._schema = DEFAULT_SCHEMA
 
-    def all(self):
+    def all(self) -> Any:
         return self._schema
 
-    def select(self, keys):
+    def select(self, keys) -> Dict[Any, Any]:
         return dict(filter(lambda item: item[0] in keys, self._schema.items()))
 
-    def update(self, k, v):
+    def update(self, k, v) -> None:
         self._schema[k] = v
 
-    def updates(self, dictionary):
+    def updates(self, dictionary) -> None:
         for k, v, in dictionary.items():
             self.update(k, v)
 
 
-DEFAULT_SCHEMA = {
+DEFAULT_SCHEMA: Dict[str, Dict[str, Any]] = {
     "from_num": {"type": "integer"},
     "count": {"type": "integer"},
     "from_id": {"type": "integer"},
