@@ -4,8 +4,9 @@ import hashlib
 from decimal import Decimal
 from datetime import datetime
 from abc import ABCMeta, abstractmethod
+from typing import Optional
 from urllib.parse import urlencode
-from zaifapi.api_common import get_response, get_api_url, method_name
+from zaifapi.api_common import ApiUrl, get_response, get_api_url, method_name
 from zaifapi.api_error import ZaifApiError, ZaifApiNonceError
 from . import ZaifExchangeApi
 
@@ -180,7 +181,7 @@ class ZaifLeverageTradeApi(_ZaifTradeApiBase):
 
 
 class ZaifTokenTradeApi(ZaifTradeApi):
-    def __init__(self, token, api_url=None):
+    def __init__(self, token: str, api_url: Optional[ApiUrl] = None):
         self._token = token
         super().__init__(None, None, api_url)
 

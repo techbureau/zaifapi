@@ -1,4 +1,5 @@
 import itertools
+from typing import List, Optional
 from urllib.parse import urlencode
 
 
@@ -24,7 +25,7 @@ class ApiUrl:
         self._dirs = dirs or []
         self._version = version
 
-    def get_base_url(self):
+    def get_base_url(self) -> str:
         base = self._skeleton_url.format(self._protocol, self._host, self._get_port())
         if self._api_name:
             base += "/" + str(self._api_name)
@@ -33,37 +34,37 @@ class ApiUrl:
             base += "/" + str(self._version)
         return base
 
-    def get_absolute_url(self, *, with_params=False):
+    def get_absolute_url(self, *, with_params: bool = False) -> str:
         absolute_url = self.get_base_url() + self.get_pathname()
         if with_params is True:
             absolute_url += self._q_params.get_str_params()
         return absolute_url
 
-    def get_pathname(self):
+    def get_pathname(self) -> str:
         path_name = ""
         for dir_ in self._dirs:
             path_name += "/" + str(dir_)
         return path_name
 
-    def _get_port(self):
+    def _get_port(self) -> str:
         if self._port:
             return ":{}".format(self._port)
         return ""
 
-    def add_dirs(self, dir_, *dirs):
+    def add_dirs(self, dir_, *dirs) -> None:
         for dir_ in itertools.chain((dir_,), dirs):
             if dir_ is None:
                 return
             self._dirs.append(str(dir_))
 
-    def refresh_dirs(self):
+    def refresh_dirs(self) -> None:
         self._dirs = []
 
-    def add_q_params(self, dict_):
+    def add_q_params(self, dict_) -> None:
         for key, value in dict_.items():
             self._q_params.add_param(key, value)
 
-    def refresh_q_params(self):
+    def refresh_q_params(self) -> None:
         self._q_params.delete_all()
 
 
@@ -71,10 +72,10 @@ class QueryParam:
     def __init__(self, params=None):
         self._params = params or {}
 
-    def _encode(self):
+    def _encode(self) -> str:
         return urlencode(self._params)
 
-    def get_str_params(self):
+    def get_str_params(self) -> str:
         if len(self._params) == 0:
             return ""
         return "?" + self._encode()
@@ -82,14 +83,14 @@ class QueryParam:
     def __str__(self):
         return self._encode()
 
-    def add_param(self, k, v):
+    def add_param(self, k, v) -> None:
         self._params[k] = v
 
-    def add_params(self, dictionary):
+    def add_params(self, dictionary) -> None:
         for k, v in dictionary.items():
             self._params[k] = v
 
-    def delete_all(self):
+    def delete_all(self) -> None:
         self._params = {}
 
     def __len__(self):
@@ -100,8 +101,14 @@ class QueryParam:
 
 
 def get_api_url(
-    arg_api_url, api_name, protocol="https", host="api.zaif.jp", version=None, dirs=None, port=None
-):
+    arg_api_url: Optional[ApiUrl],
+    api_name: Optional[str],
+    protocol: str = "https",
+    host: str = "api.zaif.jp",
+    version: Optional[str] = None,
+    dirs: Optional[List[str]] = None,
+    port: Optional[int] = None,
+) -> ApiUrl:
     if arg_api_url is not None:
         return arg_api_url
     return ApiUrl(api_name, protocol=protocol, host=host, version=version, dirs=dirs, port=port)

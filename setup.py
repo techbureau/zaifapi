@@ -7,7 +7,10 @@ with io.open("README.md", encoding="utf-8") as fp:
     readme = fp.read()
 
 with io.open("zaifapi/__init__.py", encoding="utf-8") as fp:
-    version = re.search(r"__version__ = \"(.*?)\"", fp.read()).group(1)
+    match = re.search(r"__version__ = \"(.*?)\"", fp.read())
+    if not match:
+        raise Exception("invalid version string")
+    version = match.group(1)
 
 setup(
     name="zaifapi",
@@ -25,6 +28,9 @@ setup(
         "Development Status :: 4 - Beta",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
     ],
