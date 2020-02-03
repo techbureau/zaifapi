@@ -13,8 +13,8 @@ class ZaifExchangeApi(ZaifApi, metaclass=ABCMeta):
         raise NotImplementedError
 
 
-from .public import ZaifPublicApi, ZaifFuturesPublicApi, ZaifPublicStreamApi
-from .trade import ZaifTokenTradeApi, ZaifTradeApi, ZaifLeverageTradeApi
+from .public import ZaifPublicApi, ZaifFuturesPublicApi, ZaifPublicStreamApi  # NOQA
+from .trade import ZaifTokenTradeApi, ZaifTradeApi, ZaifLeverageTradeApi  # NOQA
 
 
 __all__ = [
