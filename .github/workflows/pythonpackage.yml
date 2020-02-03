@@ -30,7 +30,7 @@ jobs:
     - name: Black format
       run: |
         pip install black
-        black --diff
+        black --check .
     - name: List with mypy
       run: |
         pip install mypy
